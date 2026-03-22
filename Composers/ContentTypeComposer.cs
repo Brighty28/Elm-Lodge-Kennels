@@ -44,8 +44,33 @@ public class ContentTypeNotificationHandler
 
     public void Handle(Umbraco.Cms.Core.Notifications.UmbracoApplicationStartedNotification notification)
     {
+        CreateTemplates();
         CreateDocumentTypes();
         SeedContent();
+    }
+
+    private ITemplate GetOrCreateTemplate(string alias, string name)
+    {
+        var template = _fileService.GetTemplate(alias);
+        if (template != null) return template;
+
+        // Create the template in the database — Umbraco will use the
+        // matching .cshtml file on disk for the actual view content.
+        template = new Template(_shortStringHelper, name, alias);
+        _fileService.SaveTemplate(template);
+        _logger.LogInformation("Created template: {Alias}", alias);
+        return template;
+    }
+
+    private void CreateTemplates()
+    {
+        // Ensure all templates exist in the database so they can be
+        // assigned to document types. The .cshtml files already exist
+        // in /Views — this just registers them with Umbraco.
+        GetOrCreateTemplate("home", "Home");
+        GetOrCreateTemplate("standardPage", "Standard Page");
+        GetOrCreateTemplate("contact", "Contact");
+        GetOrCreateTemplate("prices", "Prices");
     }
 
     private void CreateDocumentTypes()
@@ -54,12 +79,13 @@ public class ContentTypeNotificationHandler
         var existing = _contentTypeService.Get("homepage");
         if (existing != null) return;
 
+        _logger.LogInformation("Creating document types...");
+
         // Get data type references
         var textboxDt = _dataTypeService.GetDataType(Constants.DataTypes.Textbox);
         var textareaDt = _dataTypeService.GetDataType(Constants.DataTypes.Textarea);
         var richtextDt = _dataTypeService.GetDataType(Constants.DataTypes.RichtextEditor);
         var uploadDt = _dataTypeService.GetDataType(Constants.DataTypes.Upload);
-        var boolDt = _dataTypeService.GetDataType(Constants.DataTypes.Boolean);
 
         // ---- SEO Composition ----
         var seoComposition = new ContentType(_shortStringHelper, -1)
@@ -178,6 +204,8 @@ public class ContentTypeNotificationHandler
             new ContentTypeSort(new Lazy<int>(() => pricesPage.Id), 2, pricesPage.Alias)
         };
         _contentTypeService.Save(homepage);
+
+        _logger.LogInformation("Document types created successfully.");
     }
 
     private void SeedContent()
@@ -191,10 +219,6 @@ public class ContentTypeNotificationHandler
         }
 
         var homepageType = _contentTypeService.Get("homepage");
-        var standardPageType = _contentTypeService.Get("standardPage");
-        var contactPageType = _contentTypeService.Get("contactPage");
-        var pricesPageType = _contentTypeService.Get("pricesPage");
-
         if (homepageType == null)
         {
             _logger.LogWarning("Homepage content type not found, cannot seed content.");
@@ -222,55 +246,46 @@ public class ContentTypeNotificationHandler
         _contentService.SaveAndPublish(home);
 
         // ---- About Us ----
-        if (standardPageType != null)
-        {
-            var about = _contentService.Create("About Us", home.Id, "standardPage");
-            about.SetValue("subtitle", "Learn more about our family-run kennels");
-            about.SetValue("bodyText", "<p>Elm Lodge Kennels is a family-run business that has been caring for dogs in the Wisbech and Cambridgeshire area for many years. We are fully licensed by the local council and insured, giving you complete peace of mind when leaving your beloved pet with us.</p><p>Our team is made up of experienced, dedicated animal lovers who are passionate about providing the very best care for every dog that stays with us. We believe that every dog deserves individual attention, and we pride ourselves on getting to know each dog's personality, preferences and needs.</p><p>Whether your dog is a regular visitor or staying for the first time, we will make sure they feel right at home. We welcome you to visit us and see our facilities for yourself — we're always happy to show you around.</p>");
-            about.SetValue("metaTitle", "About Us - Elm Lodge Kennels");
-            about.SetValue("metaDescription", "Learn about Elm Lodge Kennels, a family-run boarding kennels in Wisbech, Cambridgeshire with years of experience caring for dogs.");
-            _contentService.SaveAndPublish(about);
+        var about = _contentService.Create("About Us", home.Id, "standardPage");
+        about.SetValue("subtitle", "Learn more about our family-run kennels");
+        about.SetValue("bodyText", "<p>Elm Lodge Kennels is a family-run business that has been caring for dogs in the Wisbech and Cambridgeshire area for many years. We are fully licensed by the local council and insured, giving you complete peace of mind when leaving your beloved pet with us.</p><p>Our team is made up of experienced, dedicated animal lovers who are passionate about providing the very best care for every dog that stays with us. We believe that every dog deserves individual attention, and we pride ourselves on getting to know each dog's personality, preferences and needs.</p><p>Whether your dog is a regular visitor or staying for the first time, we will make sure they feel right at home. We welcome you to visit us and see our facilities for yourself — we're always happy to show you around.</p>");
+        about.SetValue("metaTitle", "About Us - Elm Lodge Kennels");
+        about.SetValue("metaDescription", "Learn about Elm Lodge Kennels, a family-run boarding kennels in Wisbech, Cambridgeshire with years of experience caring for dogs.");
+        _contentService.SaveAndPublish(about);
 
-            // ---- Our Kennels ----
-            var kennels = _contentService.Create("Our Kennels", home.Id, "standardPage");
-            kennels.SetValue("subtitle", "Spacious, comfortable accommodation for your dog");
-            kennels.SetValue("bodyText", "<p>Our kennels have been purpose-built to provide maximum comfort and safety for your dog. Each kennel is spacious, individually heated, and comes with comfortable bedding to ensure your dog has a great night's sleep.</p><p>Every kennel has its own covered outdoor run, so your dog can enjoy fresh air and exercise whatever the weather. The runs are securely fenced and regularly cleaned to maintain the highest standards of hygiene.</p><h3>Kennel Features</h3><ul><li>Individually heated kennels</li><li>Comfortable bedding provided</li><li>Individual covered outdoor runs</li><li>Secure, fully fenced areas</li><li>Daily cleaning and disinfection</li><li>Fresh water always available</li></ul>");
-            kennels.SetValue("metaTitle", "Our Kennels - Elm Lodge Kennels");
-            kennels.SetValue("metaDescription", "Explore our spacious, heated boarding kennels with individual covered runs in Wisbech, Cambridgeshire.");
-            _contentService.SaveAndPublish(kennels);
+        // ---- Our Kennels ----
+        var kennels = _contentService.Create("Our Kennels", home.Id, "standardPage");
+        kennels.SetValue("subtitle", "Spacious, comfortable accommodation for your dog");
+        kennels.SetValue("bodyText", "<p>Our kennels have been purpose-built to provide maximum comfort and safety for your dog. Each kennel is spacious, individually heated, and comes with comfortable bedding to ensure your dog has a great night's sleep.</p><p>Every kennel has its own covered outdoor run, so your dog can enjoy fresh air and exercise whatever the weather. The runs are securely fenced and regularly cleaned to maintain the highest standards of hygiene.</p><h3>Kennel Features</h3><ul><li>Individually heated kennels</li><li>Comfortable bedding provided</li><li>Individual covered outdoor runs</li><li>Secure, fully fenced areas</li><li>Daily cleaning and disinfection</li><li>Fresh water always available</li></ul>");
+        kennels.SetValue("metaTitle", "Our Kennels - Elm Lodge Kennels");
+        kennels.SetValue("metaDescription", "Explore our spacious, heated boarding kennels with individual covered runs in Wisbech, Cambridgeshire.");
+        _contentService.SaveAndPublish(kennels);
 
-            // ---- Facilities ----
-            var facilities = _contentService.Create("Facilities", home.Id, "standardPage");
-            facilities.SetValue("subtitle", "Everything your dog needs for a comfortable stay");
-            facilities.SetValue("bodyText", "<p>At Elm Lodge Kennels we have invested in creating the best possible environment for your dog's stay. Our facilities are designed with your dog's comfort, safety and happiness in mind.</p><h3>Exercise Paddock</h3><p>Our large, securely fenced exercise paddock provides plenty of space for your dog to run, play and explore. Each dog is given individual exercise time to ensure they get the attention and activity they need.</p><h3>Grooming</h3><p>Every dog is groomed and cared for individually throughout the day. We can also arrange for professional grooming services if required.</p><h3>Feeding</h3><p>We provide a high-quality balanced diet for all dogs in our care. If your dog has specific dietary requirements or you prefer to supply your own food, we are more than happy to accommodate this.</p>");
-            facilities.SetValue("metaTitle", "Facilities - Elm Lodge Kennels");
-            facilities.SetValue("metaDescription", "Discover our exercise paddock, grooming services, and quality feeding arrangements at Elm Lodge Kennels.");
-            _contentService.SaveAndPublish(facilities);
-        }
+        // ---- Facilities ----
+        var facilities = _contentService.Create("Facilities", home.Id, "standardPage");
+        facilities.SetValue("subtitle", "Everything your dog needs for a comfortable stay");
+        facilities.SetValue("bodyText", "<p>At Elm Lodge Kennels we have invested in creating the best possible environment for your dog's stay. Our facilities are designed with your dog's comfort, safety and happiness in mind.</p><h3>Exercise Paddock</h3><p>Our large, securely fenced exercise paddock provides plenty of space for your dog to run, play and explore. Each dog is given individual exercise time to ensure they get the attention and activity they need.</p><h3>Grooming</h3><p>Every dog is groomed and cared for individually throughout the day. We can also arrange for professional grooming services if required.</p><h3>Feeding</h3><p>We provide a high-quality balanced diet for all dogs in our care. If your dog has specific dietary requirements or you prefer to supply your own food, we are more than happy to accommodate this.</p>");
+        facilities.SetValue("metaTitle", "Facilities - Elm Lodge Kennels");
+        facilities.SetValue("metaDescription", "Discover our exercise paddock, grooming services, and quality feeding arrangements at Elm Lodge Kennels.");
+        _contentService.SaveAndPublish(facilities);
 
         // ---- Contact ----
-        if (contactPageType != null)
-        {
-            var contact = _contentService.Create("Contact", home.Id, "contactPage");
-            contact.SetValue("bodyText", "<p>We'd love to hear from you. Whether you'd like to make a booking, arrange a visit, or simply have a question about our services, please don't hesitate to get in touch.</p><p>You can reach us by phone, email, or by filling in the contact form. We aim to respond to all enquiries within 24 hours.</p>");
-            contact.SetValue("recipientEmailAddress", "info@elmlodgekennels.co.uk");
-            contact.SetValue("emailSubject", "Website Enquiry - Elm Lodge Kennels");
-            contact.SetValue("senderEmailAddress", "noreply@elmlodgekennels.co.uk");
-            contact.SetValue("metaTitle", "Contact Us - Elm Lodge Kennels");
-            contact.SetValue("metaDescription", "Get in touch with Elm Lodge Kennels in Wisbech, Cambridgeshire. Book your dog's stay or arrange a visit.");
-            _contentService.SaveAndPublish(contact);
-        }
+        var contact = _contentService.Create("Contact", home.Id, "contactPage");
+        contact.SetValue("bodyText", "<p>We'd love to hear from you. Whether you'd like to make a booking, arrange a visit, or simply have a question about our services, please don't hesitate to get in touch.</p><p>You can reach us by phone, email, or by filling in the contact form. We aim to respond to all enquiries within 24 hours.</p>");
+        contact.SetValue("recipientEmailAddress", "info@elmlodgekennels.co.uk");
+        contact.SetValue("emailSubject", "Website Enquiry - Elm Lodge Kennels");
+        contact.SetValue("senderEmailAddress", "noreply@elmlodgekennels.co.uk");
+        contact.SetValue("metaTitle", "Contact Us - Elm Lodge Kennels");
+        contact.SetValue("metaDescription", "Get in touch with Elm Lodge Kennels in Wisbech, Cambridgeshire. Book your dog's stay or arrange a visit.");
+        _contentService.SaveAndPublish(contact);
 
         // ---- Prices ----
-        if (pricesPageType != null)
-        {
-            var prices = _contentService.Create("Prices", home.Id, "pricesPage");
-            prices.SetValue("subtitle", "Transparent, competitive pricing for quality care");
-            prices.SetValue("bodyText", "<p>We believe in offering excellent value for the high standard of care we provide. Our prices are competitive and transparent — there are no hidden costs.</p><table><thead><tr><th>Service</th><th>Price</th></tr></thead><tbody><tr><td>Single Dog (per night)</td><td>Please enquire</td></tr><tr><td>Two Dogs (same family, per night)</td><td>Please enquire</td></tr><tr><td>Three Dogs (same family, per night)</td><td>Please enquire</td></tr></tbody></table><p>Please contact us for our most up-to-date pricing. We are happy to discuss your individual requirements and can tailor our services to suit your needs.</p>");
-            prices.SetValue("metaTitle", "Prices - Elm Lodge Kennels");
-            prices.SetValue("metaDescription", "View our competitive boarding kennel prices at Elm Lodge Kennels, Wisbech. Transparent pricing with no hidden costs.");
-            _contentService.SaveAndPublish(prices);
-        }
+        var prices = _contentService.Create("Prices", home.Id, "pricesPage");
+        prices.SetValue("subtitle", "Transparent, competitive pricing for quality care");
+        prices.SetValue("bodyText", "<p>We believe in offering excellent value for the high standard of care we provide. Our prices are competitive and transparent — there are no hidden costs.</p><table><thead><tr><th>Service</th><th>Price</th></tr></thead><tbody><tr><td>Single Dog (per night)</td><td>Please enquire</td></tr><tr><td>Two Dogs (same family, per night)</td><td>Please enquire</td></tr><tr><td>Three Dogs (same family, per night)</td><td>Please enquire</td></tr></tbody></table><p>Please contact us for our most up-to-date pricing. We are happy to discuss your individual requirements and can tailor our services to suit your needs.</p>");
+        prices.SetValue("metaTitle", "Prices - Elm Lodge Kennels");
+        prices.SetValue("metaDescription", "View our competitive boarding kennel prices at Elm Lodge Kennels, Wisbech. Transparent pricing with no hidden costs.");
+        _contentService.SaveAndPublish(prices);
 
         _logger.LogInformation("Content seeding complete.");
     }
