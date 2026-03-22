@@ -1,0 +1,159 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "_Layout.cshtml";
+    var homepage = Model;
+    var heroTitle = Model.Value<string>("heroTitle") ?? "Welcome to Elm Lodge Kennels";
+    var heroSubtitle = Model.Value<string>("heroSubtitle") ?? "A family-run boarding kennels in the heart of Cambridgeshire, providing exceptional care for your beloved dog.";
+    var bodyText = Model.Value<IHtmlEncodedString>("bodyText");
+    var servicesIntro = Model.Value<string>("servicesIntro") ?? "We take enormous pride in offering the highest standard of care and accommodation for your pets.";
+    var aboutSummary = Model.Value<IHtmlEncodedString>("aboutSummary");
+}
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero__overlay"></div>
+    <div class="container">
+        <div class="hero__content">
+            <h1>@heroTitle</h1>
+            <p>@heroSubtitle</p>
+            <div class="hero__buttons">
+                @{
+                    var contactPage = homepage.Children().FirstOrDefault(x => x.ContentType.Alias == "contactPage");
+                    var kennelsPage = homepage.Children().FirstOrDefault(x => x.Name.Contains("Kennel"));
+                }
+                @if (contactPage != null)
+                {
+                    <a href="@contactPage.Url()" class="btn btn--primary">Book Now</a>
+                }
+                @if (kennelsPage != null)
+                {
+                    <a href="@kennelsPage.Url()" class="btn btn--outline">Our Kennels</a>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Bar -->
+<section class="features-bar">
+    <div class="container">
+        <div class="features-bar__grid">
+            <div class="features-bar__item">
+                <i class="fas fa-shield-dog"></i>
+                <h3>Safe &amp; Secure</h3>
+                <p>Fully licensed and insured facility with 24/7 security</p>
+            </div>
+            <div class="features-bar__item">
+                <i class="fas fa-heart"></i>
+                <h3>Family Run</h3>
+                <p>Personal, loving care from our experienced family team</p>
+            </div>
+            <div class="features-bar__item">
+                <i class="fas fa-tree"></i>
+                <h3>Exercise Paddock</h3>
+                <p>Large outdoor paddock for daily exercise and play</p>
+            </div>
+            <div class="features-bar__item">
+                <i class="fas fa-person-walking"></i>
+                <h3>Private Walks</h3>
+                <p>Individual walks to keep your dog happy and active</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Welcome / Body Section -->
+@if (bodyText != null)
+{
+    <section class="section section--light">
+        <div class="container">
+            <div class="section__header">
+                <h2>About Elm Lodge</h2>
+                <div class="section__divider"></div>
+            </div>
+            <div class="content-block">
+                @bodyText
+            </div>
+        </div>
+    </section>
+}
+
+<!-- Services Section -->
+<section class="section section--warm">
+    <div class="container">
+        <div class="section__header">
+            <h2>Our Services</h2>
+            <div class="section__divider"></div>
+            <p>@servicesIntro</p>
+        </div>
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-card__icon">
+                    <i class="fas fa-house-chimney"></i>
+                </div>
+                <h3>Boarding Kennels</h3>
+                <p>Spacious, heated individual kennels with comfortable bedding. Each kennel has its own covered run for fresh air whatever the weather.</p>
+                @if (kennelsPage != null)
+                {
+                    <a href="@kennelsPage.Url()" class="service-card__link">Learn More <i class="fas fa-arrow-right"></i></a>
+                }
+            </div>
+            <div class="service-card">
+                <div class="service-card__icon">
+                    <i class="fas fa-paw"></i>
+                </div>
+                <h3>Exercise &amp; Play</h3>
+                <p>Daily exercise in our large paddock area and private walks ensure your dog stays happy, healthy and entertained throughout their stay.</p>
+                @{
+                    var facilitiesPage = homepage.Children().FirstOrDefault(x => x.Name.Contains("Facilit"));
+                }
+                @if (facilitiesPage != null)
+                {
+                    <a href="@facilitiesPage.Url()" class="service-card__link">Learn More <i class="fas fa-arrow-right"></i></a>
+                }
+            </div>
+            <div class="service-card">
+                <div class="service-card__icon">
+                    <i class="fas fa-shower"></i>
+                </div>
+                <h3>Grooming</h3>
+                <p>Every dog is groomed and cared for individually throughout the day. Your dog will return home looking and feeling fantastic.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Summary -->
+@if (aboutSummary != null)
+{
+    <section class="section section--light">
+        <div class="container">
+            <div class="about-summary">
+                <div class="about-summary__content">
+                    @aboutSummary
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <h2>Ready to Book Your Dog's Stay?</h2>
+        <p>Get in touch today to discuss your requirements or to make a booking.</p>
+        <div class="cta-section__buttons">
+            @if (contactPage != null)
+            {
+                <a href="@contactPage.Url()" class="btn btn--primary btn--large">Contact Us</a>
+            }
+            @{
+                var pricesPage = homepage.Children().FirstOrDefault(x => x.Name.Contains("Price"));
+            }
+            @if (pricesPage != null)
+            {
+                <a href="@pricesPage.Url()" class="btn btn--outline btn--large">View Prices</a>
+            }
+        </div>
+    </div>
+</section>

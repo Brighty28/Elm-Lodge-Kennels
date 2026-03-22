@@ -1,0 +1,175 @@
+@using Umbraco.Cms.Web.Common.PublishedModels
+@using Umbraco.Extensions
+@{
+    var homepage = Model?.AncestorOrSelf("homepage") ?? Model;
+    var siteName = homepage?.Value<string>("siteName") ?? "Elm Lodge Kennels";
+    var telephone = homepage?.Value<string>("telephone") ?? "";
+    var email = homepage?.Value<string>("email") ?? "";
+    var address = homepage?.Value<string>("address") ?? "";
+    var mobile = homepage?.Value<string>("mobile") ?? "";
+    var facebookLink = homepage?.Value<string>("facebookLink") ?? "";
+    var copyright = homepage?.Value<string>("copyright") ?? "Elm Lodge Kennels. All rights reserved.";
+    var openingTimes = homepage?.Value<string>("openingTimes") ?? "";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@(Model?.Value<string>("metaTitle") ?? Model?.Name ?? "Elm Lodge Kennels") - Elm Lodge Kennels</title>
+    <meta name="description" content="@(Model?.Value<string>("metaDescription") ?? "Elm Lodge Kennels - Quality boarding kennels in Wisbech, Cambridgeshire. A family run business providing a relaxed, safe and friendly atmosphere for your dog.")" />
+    <meta name="keywords" content="@(Model?.Value<string>("metaKeywords") ?? "dog kennels, boarding kennels, Wisbech, Cambridgeshire, dog boarding, pet care")" />
+    <meta name="author" content="Elm Lodge Kennels" />
+
+    <meta property="og:title" content="@(Model?.Value<string>("metaTitle") ?? Model?.Name ?? "Elm Lodge Kennels")" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Elm Lodge Kennels" />
+    <meta property="og:description" content="@(Model?.Value<string>("metaDescription") ?? "Quality boarding kennels in Wisbech, Cambridgeshire.")" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="/css/site.css" />
+
+    @await RenderSectionAsync("Head", required: false)
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-bar__left">
+                @if (!string.IsNullOrEmpty(telephone))
+                {
+                    <a href="tel:@telephone.Replace(" ", "")"><i class="fas fa-phone"></i> @telephone</a>
+                }
+                @if (!string.IsNullOrEmpty(email))
+                {
+                    <a href="mailto:@email"><i class="fas fa-envelope"></i> @email</a>
+                }
+            </div>
+            <div class="top-bar__right">
+                @if (!string.IsNullOrEmpty(facebookLink))
+                {
+                    <a href="@facebookLink" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <header class="site-header" id="site-header">
+        <div class="container">
+            <a href="/" class="site-header__logo">
+                <i class="fas fa-paw"></i>
+                <span>Elm Lodge <strong>Kennels</strong></span>
+            </a>
+            <button class="site-header__toggle" id="nav-toggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <nav class="site-nav" id="site-nav">
+                <ul>
+                    @if (homepage != null)
+                    {
+                        <li class="@(Model?.Id == homepage.Id ? "active" : "")">
+                            <a href="@homepage.Url()">Home</a>
+                        </li>
+                        @foreach (var child in homepage.Children().Where(x => x.IsVisible()))
+                        {
+                            var isActive = Model?.Id == child.Id || Model?.Path.Contains(child.Id.ToString()) == true;
+                            <li class="@(isActive ? "active" : "")">
+                                <a href="@child.Url()">@child.Name</a>
+                            </li>
+                        }
+                    }
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="site-footer__grid">
+                <div class="site-footer__about">
+                    <h3><i class="fas fa-paw"></i> Elm Lodge Kennels</h3>
+                    <p>A family-run boarding kennels in the heart of Cambridgeshire, providing a relaxed, safe and friendly atmosphere where the care and welfare of your dog is our top priority.</p>
+                    @if (!string.IsNullOrEmpty(facebookLink))
+                    {
+                        <div class="site-footer__social">
+                            <a href="@facebookLink" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        </div>
+                    }
+                </div>
+
+                <div class="site-footer__contact">
+                    <h3>Contact Us</h3>
+                    <ul>
+                        @if (!string.IsNullOrEmpty(address))
+                        {
+                            <li><i class="fas fa-map-marker-alt"></i> @Html.Raw(address.Replace("\n", "<br />"))</li>
+                        }
+                        @if (!string.IsNullOrEmpty(telephone))
+                        {
+                            <li><i class="fas fa-phone"></i> <a href="tel:@telephone.Replace(" ", "")">@telephone</a></li>
+                        }
+                        @if (!string.IsNullOrEmpty(mobile))
+                        {
+                            <li><i class="fas fa-mobile-alt"></i> <a href="tel:@mobile.Replace(" ", "")">@mobile</a></li>
+                        }
+                        @if (!string.IsNullOrEmpty(email))
+                        {
+                            <li><i class="fas fa-envelope"></i> <a href="mailto:@email">@email</a></li>
+                        }
+                    </ul>
+                </div>
+
+                <div class="site-footer__hours">
+                    <h3>Opening Hours</h3>
+                    @if (!string.IsNullOrEmpty(openingTimes))
+                    {
+                        <p>@Html.Raw(openingTimes.Replace("\n", "<br />"))</p>
+                    }
+                    else
+                    {
+                        <ul>
+                            <li><span>Monday - Friday</span> <span>8am - 6pm</span></li>
+                            <li><span>Saturday</span> <span>8am - 5pm</span></li>
+                            <li><span>Sunday</span> <span>9am - 4pm</span></li>
+                        </ul>
+                    }
+                </div>
+
+                <div class="site-footer__links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        @if (homepage != null)
+                        {
+                            <li><a href="@homepage.Url()">Home</a></li>
+                            @foreach (var child in homepage.Children().Where(x => x.IsVisible()))
+                            {
+                                <li><a href="@child.Url()">@child.Name</a></li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="site-footer__bottom">
+            <div class="container">
+                <p>&copy; @DateTime.Now.Year @copyright</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/site.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

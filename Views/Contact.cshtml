@@ -1,0 +1,142 @@
+@using ElmLodgeKennels.Models
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "_Layout.cshtml";
+    var pageTitle = Model.Value<string>("metaTitle") ?? Model.Name ?? "Contact Us";
+    var bodyText = Model.Value<IHtmlEncodedString>("bodyText");
+    var homepage = Model.AncestorOrSelf("homepage");
+    var telephone = homepage?.Value<string>("telephone") ?? "";
+    var mobile = homepage?.Value<string>("mobile") ?? "";
+    var email = homepage?.Value<string>("email") ?? "";
+    var address = homepage?.Value<string>("address") ?? "";
+}
+
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <h1>@pageTitle</h1>
+        <p>We'd love to hear from you</p>
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+            <ol>
+                <li><a href="/">Home</a></li>
+                <li aria-current="page">@Model.Name</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<!-- Contact Content -->
+<section class="section section--light">
+    <div class="container">
+        <div class="contact-grid">
+            <!-- Contact Info -->
+            <div class="contact-info">
+                @if (bodyText != null)
+                {
+                    <div class="content-block">
+                        @bodyText
+                    </div>
+                }
+
+                <div class="contact-info__cards">
+                    @if (!string.IsNullOrEmpty(telephone))
+                    {
+                        <div class="contact-info__card">
+                            <i class="fas fa-phone"></i>
+                            <div>
+                                <h3>Telephone</h3>
+                                <a href="tel:@telephone.Replace(" ", "")">@telephone</a>
+                            </div>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(mobile))
+                    {
+                        <div class="contact-info__card">
+                            <i class="fas fa-mobile-alt"></i>
+                            <div>
+                                <h3>Mobile</h3>
+                                <a href="tel:@mobile.Replace(" ", "")">@mobile</a>
+                            </div>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(email))
+                    {
+                        <div class="contact-info__card">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <h3>Email</h3>
+                                <a href="mailto:@email">@email</a>
+                            </div>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(address))
+                    {
+                        <div class="contact-info__card">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <h3>Address</h3>
+                                <p>@Html.Raw(address.Replace("\n", "<br />"))</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="contact-form-wrapper">
+                <h2>Send Us a Message</h2>
+
+                @if (TempData["ContactSuccess"] != null)
+                {
+                    <div class="alert alert--success">
+                        <i class="fas fa-check-circle"></i>
+                        @TempData["ContactSuccess"]
+                    </div>
+                }
+
+                @if (TempData["ContactError"] != null)
+                {
+                    <div class="alert alert--error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        @TempData["ContactError"]
+                    </div>
+                }
+
+                @using (Html.BeginUmbracoForm<ElmLodgeKennels.Controllers.ContactSurfaceController>(
+                    "SendContactForm",
+                    null,
+                    new { @class = "contact-form", novalidate = "novalidate" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group">
+                        <label for="Name">Your Name *</label>
+                        <input type="text" id="Name" name="Name" required placeholder="Enter your full name" />
+                        <span class="field-validation-error" data-valmsg-for="Name"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Email">Email Address *</label>
+                        <input type="email" id="Email" name="Email" required placeholder="Enter your email address" />
+                        <span class="field-validation-error" data-valmsg-for="Email"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Phone">Phone Number</label>
+                        <input type="tel" id="Phone" name="Phone" placeholder="Enter your phone number" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Message">Message *</label>
+                        <textarea id="Message" name="Message" rows="6" required placeholder="Tell us about your requirements..."></textarea>
+                        <span class="field-validation-error" data-valmsg-for="Message"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn--primary btn--full">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</section>

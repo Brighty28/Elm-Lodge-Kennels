@@ -1,0 +1,58 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "_Layout.cshtml";
+    var pageTitle = Model.Value<string>("metaTitle") ?? Model.Name;
+    var subtitle = Model.Value<string>("subtitle") ?? "";
+    var bodyText = Model.Value<IHtmlEncodedString>("bodyText");
+    var headerImage = Model.Value<string>("headerImage");
+}
+
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <h1>@pageTitle</h1>
+        @if (!string.IsNullOrEmpty(subtitle))
+        {
+            <p>@subtitle</p>
+        }
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+            <ol>
+                <li><a href="/">Home</a></li>
+                <li aria-current="page">@Model.Name</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<!-- Content -->
+<section class="section section--light">
+    <div class="container">
+        <div class="content-page">
+            @if (!string.IsNullOrEmpty(headerImage))
+            {
+                <div class="content-page__image">
+                    <img src="@headerImage" alt="@pageTitle" loading="lazy" />
+                </div>
+            }
+            <div class="content-page__body content-block">
+                @bodyText
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section cta-section--compact">
+    <div class="container">
+        <h2>Have Questions?</h2>
+        <p>We'd love to hear from you. Get in touch to find out more about our kennels.</p>
+        @{
+            var homepage = Model.AncestorOrSelf("homepage");
+            var contactPage = homepage?.Children().FirstOrDefault(x => x.ContentType.Alias == "contactPage");
+        }
+        @if (contactPage != null)
+        {
+            <a href="@contactPage.Url()" class="btn btn--primary">Contact Us</a>
+        }
+    </div>
+</section>
