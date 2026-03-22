@@ -11,6 +11,8 @@ WebApplication app = builder.Build();
 
 await app.BootUmbracoAsync();
 
+// Ensure the media directory exists (Umbraco requires it at startup)
+Directory.CreateDirectory(Path.Combine(builder.Environment.WebRootPath, "media"));
 
 app.UseUmbraco()
     .WithMiddleware(u =>
