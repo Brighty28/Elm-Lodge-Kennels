@@ -1,9 +1,11 @@
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@using Umbraco.Cms.Core.Models.Blocks
 @{
     Layout = "_Layout.cshtml";
     var pageTitle = Model.Value<string>("metaTitle") ?? Model.Name ?? "Prices";
     var subtitle = Model.Value<string>("subtitle") ?? "Transparent, competitive pricing for quality care";
-    var bodyText = Model.Value<IHtmlEncodedString>("bodyText");
+    var bodyText = Model.Value("bodyText");
+    var priceItems = Model.Value<BlockListModel>("priceItems");
 }
 
 <!-- Page Header -->
@@ -29,7 +31,31 @@
                 <div class="section__divider"></div>
             </div>
 
-            @if (bodyText != null)
+            @if (priceItems?.Any() == true)
+            {
+                <div class="content-block">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Service</th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var block in priceItems)
+                            {
+                                var serviceName = block.Content.Value<string>("serviceName");
+                                var price = block.Content.Value<string>("price");
+                                <tr>
+                                    <td>@serviceName</td>
+                                    <td>@price</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else if (bodyText != null)
             {
                 <div class="content-block content-block--centered">
                     @bodyText

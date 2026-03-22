@@ -1,8 +1,9 @@
 @using Umbraco.Cms.Web.Common.PublishedModels
 @using Umbraco.Extensions
+@using Umbraco.Cms.Core.Models.Blocks
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
-    var homepage = Model; //Model?.AncestorOrSelf("homepage") ?? Model;
+    var homepage = Model?.AncestorOrSelf("homepage") ?? Model;
     var siteName = homepage?.Value<string>("siteName") ?? "Elm Lodge Kennels";
     var telephone = homepage?.Value<string>("telephone") ?? "";
     var email = homepage?.Value<string>("email") ?? "";
@@ -10,7 +11,9 @@
     var mobile = homepage?.Value<string>("mobile") ?? "";
     var facebookLink = homepage?.Value<string>("facebookLink") ?? "";
     var copyright = homepage?.Value<string>("copyright") ?? "Elm Lodge Kennels. All rights reserved.";
-    var openingTimes = homepage?.Value<string>("openingTimes") ?? "";
+
+    var metaKeywords = Model?.Value<IEnumerable<string>>("metaKeywords");
+    var keywordsString = metaKeywords != null ? string.Join(", ", metaKeywords) : "dog kennels, boarding kennels, Wisbech, Cambridgeshire, dog boarding, pet care";
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -19,7 +22,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>@(Model?.Value<string>("metaTitle") ?? Model?.Name ?? "Elm Lodge Kennels") - Elm Lodge Kennels</title>
     <meta name="description" content="@(Model?.Value<string>("metaDescription") ?? "Elm Lodge Kennels - Quality boarding kennels in Wisbech, Cambridgeshire. A family run business providing a relaxed, safe and friendly atmosphere for your dog.")" />
-    <meta name="keywords" content="@(Model?.Value<string>("metaKeywords") ?? "dog kennels, boarding kennels, Wisbech, Cambridgeshire, dog boarding, pet care")" />
+    <meta name="keywords" content="@keywordsString" />
     <meta name="author" content="Elm Lodge Kennels" />
 
     <meta property="og:title" content="@(Model?.Value<string>("metaTitle") ?? Model?.Name ?? "Elm Lodge Kennels")" />
@@ -37,26 +40,29 @@
 </head>
 <body>
     <!-- Top Bar -->
-    <div class="top-bar">
-        <div class="container">
-            <div class="top-bar__left">
-                @if (!string.IsNullOrEmpty(telephone))
-                {
-                    <a href="tel:@telephone.Replace(" ", "")"><i class="fas fa-phone"></i> @telephone</a>
-                }
-                @if (!string.IsNullOrEmpty(email))
-                {
-                    <a href="mailto:@email"><i class="fas fa-envelope"></i> @email</a>
-                }
-            </div>
-            <div class="top-bar__right">
-                @if (!string.IsNullOrEmpty(facebookLink))
-                {
-                    <a href="@facebookLink" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                }
+    @if (!string.IsNullOrEmpty(telephone) || !string.IsNullOrEmpty(email))
+    {
+        <div class="top-bar">
+            <div class="container">
+                <div class="top-bar__left">
+                    @if (!string.IsNullOrEmpty(telephone))
+                    {
+                        <a href="tel:@telephone.Replace(" ", "")"><i class="fas fa-phone"></i> @telephone</a>
+                    }
+                    @if (!string.IsNullOrEmpty(email))
+                    {
+                        <a href="mailto:@email"><i class="fas fa-envelope"></i> @email</a>
+                    }
+                </div>
+                <div class="top-bar__right">
+                    @if (!string.IsNullOrEmpty(facebookLink))
+                    {
+                        <a href="@facebookLink" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    }
+                </div>
             </div>
         </div>
-    </div>
+    }
 
     <!-- Navigation -->
     <header class="site-header" id="site-header">
@@ -77,7 +83,7 @@
                         <li class="@(Model?.Id == homepage.Id ? "active" : "")">
                             <a href="@homepage.Url()">Home</a>
                         </li>
-                        @foreach (var child in homepage.Children())//.Where(x => x.IsVisible()))
+                        @foreach (var child in homepage.Children().Where(x => x.IsVisible()))
                         {
                             var isActive = Model?.Id == child.Id || Model?.Path.Contains(child.Id.ToString()) == true;
                             <li class="@(isActive ? "active" : "")">
@@ -134,9 +140,19 @@
 
                 <div class="site-footer__hours">
                     <h3>Opening Hours</h3>
-                    @if (!string.IsNullOrEmpty(openingTimes))
+                    @{
+                        var openingTimes = homepage?.Value<BlockListModel>("openingTimesList");
+                    }
+                    @if (openingTimes?.Any() == true)
                     {
-                        <p>@Html.Raw(openingTimes.Replace("\n", "<br />"))</p>
+                        <ul>
+                            @foreach (var block in openingTimes)
+                            {
+                                var day = block.Content.Value<string>("dayRange");
+                                var hours = block.Content.Value<string>("hours");
+                                <li><span>@day</span> <span>@hours</span></li>
+                            }
+                        </ul>
                     }
                     else
                     {
@@ -154,7 +170,7 @@
                         @if (homepage != null)
                         {
                             <li><a href="@homepage.Url()">Home</a></li>
-                            @foreach (var child in homepage.Children())//.Where(x => x.IsVisible()))
+                            @foreach (var child in homepage.Children().Where(x => x.IsVisible()))
                             {
                                 <li><a href="@child.Url()">@child.Name</a></li>
                             }

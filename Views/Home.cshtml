@@ -6,8 +6,10 @@
     var heroSubtitle = Model.Value<string>("heroSubtitle") ?? "A family-run boarding kennels in the heart of Cambridgeshire, providing exceptional care for your beloved dog.";
     var bodyText = Model.Value("bodyText");
     var servicesIntro = Model.Value<string>("servicesIntro") ?? "We take enormous pride in offering the highest standard of care and accommodation for your pets.";
-    var aboutSummary = Model.Value<IHtmlContent>("aboutSummary");
+    var aboutSummary = Model.Value("aboutSummary");
 }
+
+@using Umbraco.Cms.Core.Models.Blocks
 
 <!-- Hero Section -->
 <section class="hero">
@@ -35,32 +37,58 @@
 </section>
 
 <!-- Features Bar -->
-<section class="features-bar">
-    <div class="container">
-        <div class="features-bar__grid">
-            <div class="features-bar__item">
-                <i class="fas fa-shield-dog"></i>
-                <h3>Safe &amp; Secure</h3>
-                <p>Fully licensed and insured facility with 24/7 security</p>
-            </div>
-            <div class="features-bar__item">
-                <i class="fas fa-heart"></i>
-                <h3>Family Run</h3>
-                <p>Personal, loving care from our experienced family team</p>
-            </div>
-            <div class="features-bar__item">
-                <i class="fas fa-tree"></i>
-                <h3>Exercise Paddock</h3>
-                <p>Large outdoor paddock for daily exercise and play</p>
-            </div>
-            <div class="features-bar__item">
-                <i class="fas fa-person-walking"></i>
-                <h3>Private Walks</h3>
-                <p>Individual walks to keep your dog happy and active</p>
+@{
+    var features = Model.Value<BlockListModel>("kennelFeatures");
+}
+@if (features?.Any() == true)
+{
+    <section class="features-bar">
+        <div class="container">
+            <div class="features-bar__grid">
+                @foreach (var block in features)
+                {
+                    var icon = block.Content.Value<string>("featureIcon") ?? "fas fa-paw";
+                    var title = block.Content.Value<string>("featureTitle");
+                    var description = block.Content.Value<string>("featureDescription");
+                    <div class="features-bar__item">
+                        <i class="@icon"></i>
+                        <h3>@title</h3>
+                        <p>@description</p>
+                    </div>
+                }
             </div>
         </div>
-    </div>
-</section>
+    </section>
+}
+else
+{
+    <section class="features-bar">
+        <div class="container">
+            <div class="features-bar__grid">
+                <div class="features-bar__item">
+                    <i class="fas fa-shield-dog"></i>
+                    <h3>Safe &amp; Secure</h3>
+                    <p>Fully licensed and insured facility with 24/7 security</p>
+                </div>
+                <div class="features-bar__item">
+                    <i class="fas fa-heart"></i>
+                    <h3>Family Run</h3>
+                    <p>Personal, loving care from our experienced family team</p>
+                </div>
+                <div class="features-bar__item">
+                    <i class="fas fa-tree"></i>
+                    <h3>Exercise Paddock</h3>
+                    <p>Large outdoor paddock for daily exercise and play</p>
+                </div>
+                <div class="features-bar__item">
+                    <i class="fas fa-person-walking"></i>
+                    <h3>Private Walks</h3>
+                    <p>Individual walks to keep your dog happy and active</p>
+                </div>
+            </div>
+        </div>
+    </section>
+}
 
 <!-- Welcome / Body Section -->
 @if (bodyText != null)

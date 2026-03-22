@@ -3,7 +3,7 @@
 @{
     Layout = "_Layout.cshtml";
     var pageTitle = Model.Value<string>("metaTitle") ?? Model.Name ?? "Contact Us";
-    var bodyText = Model.Value<IHtmlEncodedString>("bodyText");
+    var bodyText = Model.Value("bodyText");
     var homepage = Model.AncestorOrSelf("homepage");
     var telephone = homepage?.Value<string>("telephone") ?? "";
     var mobile = homepage?.Value<string>("mobile") ?? "";

@@ -2,6 +2,7 @@ using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.PropertyEditors;
+using Umbraco.Cms.Core.Serialization;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Strings;
 
@@ -24,6 +25,8 @@ public class ContentTypeNotificationHandler
     private readonly IShortStringHelper _shortStringHelper;
     private readonly IDataTypeService _dataTypeService;
     private readonly IFileService _fileService;
+    private readonly PropertyEditorCollection _propertyEditors;
+    private readonly IConfigurationEditorJsonSerializer _configSerializer;
     private readonly ILogger<ContentTypeNotificationHandler> _logger;
 
     public ContentTypeNotificationHandler(
@@ -32,6 +35,8 @@ public class ContentTypeNotificationHandler
         IShortStringHelper shortStringHelper,
         IDataTypeService dataTypeService,
         IFileService fileService,
+        PropertyEditorCollection propertyEditors,
+        IConfigurationEditorJsonSerializer configSerializer,
         ILogger<ContentTypeNotificationHandler> logger)
     {
         _contentTypeService = contentTypeService;
@@ -39,6 +44,8 @@ public class ContentTypeNotificationHandler
         _shortStringHelper = shortStringHelper;
         _dataTypeService = dataTypeService;
         _fileService = fileService;
+        _propertyEditors = propertyEditors;
+        _configSerializer = configSerializer;
         _logger = logger;
     }
 
@@ -54,8 +61,6 @@ public class ContentTypeNotificationHandler
         var template = _fileService.GetTemplate(alias);
         if (template != null) return template;
 
-        // Create the template in the database — Umbraco will use the
-        // matching .cshtml file on disk for the actual view content.
         template = new Template(_shortStringHelper, name, alias);
         _fileService.SaveTemplate(template);
         _logger.LogInformation("Created template: {Alias}", alias);
@@ -64,9 +69,6 @@ public class ContentTypeNotificationHandler
 
     private void CreateTemplates()
     {
-        // Ensure all templates exist in the database so they can be
-        // assigned to document types. The .cshtml files already exist
-        // in /Views — this just registers them with Umbraco.
         GetOrCreateTemplate("home", "Home");
         GetOrCreateTemplate("standardPage", "Standard Page");
         GetOrCreateTemplate("contact", "Contact");
@@ -75,17 +77,29 @@ public class ContentTypeNotificationHandler
 
     private void CreateDocumentTypes()
     {
-        // Check if Homepage already exists
         var existing = _contentTypeService.Get("homepage");
         if (existing != null) return;
 
         _logger.LogInformation("Creating document types...");
 
-        // Get data type references
+        // Get built-in data type references
         var textboxDt = _dataTypeService.GetDataType(Constants.DataTypes.Textbox);
         var textareaDt = _dataTypeService.GetDataType(Constants.DataTypes.Textarea);
         var richtextDt = _dataTypeService.GetDataType(Constants.DataTypes.RichtextEditor);
         var uploadDt = _dataTypeService.GetDataType(Constants.DataTypes.Upload);
+
+        // ---- Create Tags Data Type for SEO keywords ----
+        var tagsDt = CreateTagsDataType();
+
+        // ---- Create Element Types for Block Lists ----
+        var kennelFeatureType = CreateKennelFeatureElementType(textboxDt!);
+        var openingTimeType = CreateOpeningTimeElementType(textboxDt!);
+        var priceItemType = CreatePriceItemElementType(textboxDt!);
+
+        // ---- Create Block List Data Types ----
+        var kennelFeaturesListDt = CreateBlockListDataType("Kennel Features - Block List", kennelFeatureType);
+        var openingTimesListDt = CreateBlockListDataType("Opening Times - Block List", openingTimeType);
+        var priceItemsListDt = CreateBlockListDataType("Price Items - Block List", priceItemType);
 
         // ---- SEO Composition ----
         var seoComposition = new ContentType(_shortStringHelper, -1)
@@ -99,7 +113,7 @@ public class ContentTypeNotificationHandler
         seoComposition.AddPropertyGroup("seo", "SEO");
         seoComposition.AddPropertyType(new PropertyType(_shortStringHelper, textboxDt!) { Alias = "metaTitle", Name = "Meta Title", Description = "Page title for SEO" }, "seo");
         seoComposition.AddPropertyType(new PropertyType(_shortStringHelper, textareaDt!) { Alias = "metaDescription", Name = "Meta Description", Description = "Page description for search engines" }, "seo");
-        seoComposition.AddPropertyType(new PropertyType(_shortStringHelper, textboxDt!) { Alias = "metaKeywords", Name = "Meta Keywords" }, "seo");
+        seoComposition.AddPropertyType(new PropertyType(_shortStringHelper, tagsDt!) { Alias = "metaKeywords", Name = "Meta Keywords", Description = "SEO keyword tags" }, "seo");
         _contentTypeService.Save(seoComposition);
 
         // ---- Homepage ----
@@ -124,6 +138,7 @@ public class ContentTypeNotificationHandler
         homepage.AddPropertyType(new PropertyType(_shortStringHelper, richtextDt!) { Alias = "bodyText", Name = "Body Text" }, "content");
         homepage.AddPropertyType(new PropertyType(_shortStringHelper, textareaDt!) { Alias = "servicesIntro", Name = "Services Introduction" }, "content");
         homepage.AddPropertyType(new PropertyType(_shortStringHelper, richtextDt!) { Alias = "aboutSummary", Name = "About Summary" }, "content");
+        homepage.AddPropertyType(new PropertyType(_shortStringHelper, kennelFeaturesListDt!) { Alias = "kennelFeatures", Name = "Kennel Features", Description = "Feature items displayed in the features bar" }, "content");
 
         homepage.AddPropertyGroup("footer", "Footer Settings");
         homepage.AddPropertyType(new PropertyType(_shortStringHelper, textareaDt!) { Alias = "address", Name = "Address" }, "footer");
@@ -132,7 +147,7 @@ public class ContentTypeNotificationHandler
         homepage.AddPropertyType(new PropertyType(_shortStringHelper, textboxDt!) { Alias = "email", Name = "Email Address" }, "footer");
         homepage.AddPropertyType(new PropertyType(_shortStringHelper, textboxDt!) { Alias = "facebookLink", Name = "Facebook Link" }, "footer");
         homepage.AddPropertyType(new PropertyType(_shortStringHelper, textboxDt!) { Alias = "copyright", Name = "Copyright Text" }, "footer");
-        homepage.AddPropertyType(new PropertyType(_shortStringHelper, textareaDt!) { Alias = "openingTimes", Name = "Opening Times" }, "footer");
+        homepage.AddPropertyType(new PropertyType(_shortStringHelper, openingTimesListDt!) { Alias = "openingTimesList", Name = "Opening Times", Description = "Opening hours displayed in the footer" }, "footer");
 
         _contentTypeService.Save(homepage);
 
@@ -193,6 +208,7 @@ public class ContentTypeNotificationHandler
         pricesPage.AddPropertyGroup("content", "Content");
         pricesPage.AddPropertyType(new PropertyType(_shortStringHelper, richtextDt!) { Alias = "bodyText", Name = "Body Text" }, "content");
         pricesPage.AddPropertyType(new PropertyType(_shortStringHelper, textboxDt!) { Alias = "subtitle", Name = "Subtitle" }, "content");
+        pricesPage.AddPropertyType(new PropertyType(_shortStringHelper, priceItemsListDt!) { Alias = "priceItems", Name = "Price Items", Description = "Pricing table items" }, "content");
 
         _contentTypeService.Save(pricesPage);
 
@@ -208,9 +224,106 @@ public class ContentTypeNotificationHandler
         _logger.LogInformation("Document types created successfully.");
     }
 
+    private IContentType CreateKennelFeatureElementType(IDataType textboxDt)
+    {
+        var type = new ContentType(_shortStringHelper, -1)
+        {
+            Alias = "kennelFeature",
+            Name = "Kennel Feature",
+            Description = "A feature item with icon, title and description",
+            Icon = "icon-science",
+            IsElement = true
+        };
+        type.AddPropertyGroup("content", "Content");
+        type.AddPropertyType(new PropertyType(_shortStringHelper, textboxDt) { Alias = "featureIcon", Name = "Icon CSS Class", Description = "Font Awesome class e.g. fas fa-shield-dog" }, "content");
+        type.AddPropertyType(new PropertyType(_shortStringHelper, textboxDt) { Alias = "featureTitle", Name = "Title" }, "content");
+        type.AddPropertyType(new PropertyType(_shortStringHelper, textboxDt) { Alias = "featureDescription", Name = "Description" }, "content");
+        _contentTypeService.Save(type);
+        return type;
+    }
+
+    private IContentType CreateOpeningTimeElementType(IDataType textboxDt)
+    {
+        var type = new ContentType(_shortStringHelper, -1)
+        {
+            Alias = "openingTime",
+            Name = "Opening Time",
+            Description = "A day/time entry for opening hours",
+            Icon = "icon-time",
+            IsElement = true
+        };
+        type.AddPropertyGroup("content", "Content");
+        type.AddPropertyType(new PropertyType(_shortStringHelper, textboxDt) { Alias = "dayRange", Name = "Day(s)", Description = "e.g. Monday - Friday" }, "content");
+        type.AddPropertyType(new PropertyType(_shortStringHelper, textboxDt) { Alias = "hours", Name = "Hours", Description = "e.g. 8am - 6pm" }, "content");
+        _contentTypeService.Save(type);
+        return type;
+    }
+
+    private IContentType CreatePriceItemElementType(IDataType textboxDt)
+    {
+        var type = new ContentType(_shortStringHelper, -1)
+        {
+            Alias = "priceItem",
+            Name = "Price Item",
+            Description = "A service/price entry for the pricing table",
+            Icon = "icon-coin-pound-sterling",
+            IsElement = true
+        };
+        type.AddPropertyGroup("content", "Content");
+        type.AddPropertyType(new PropertyType(_shortStringHelper, textboxDt) { Alias = "serviceName", Name = "Service Name", Description = "e.g. Single Dog (per night)" }, "content");
+        type.AddPropertyType(new PropertyType(_shortStringHelper, textboxDt) { Alias = "price", Name = "Price", Description = "e.g. £15.00" }, "content");
+        _contentTypeService.Save(type);
+        return type;
+    }
+
+    private IDataType CreateTagsDataType()
+    {
+        if (!_propertyEditors.TryGet(Constants.PropertyEditors.Aliases.Tags, out var tagsEditor))
+        {
+            _logger.LogWarning("Tags property editor not found, falling back to textbox.");
+            return _dataTypeService.GetDataType(Constants.DataTypes.Textbox)!;
+        }
+
+        var dt = new DataType(tagsEditor, _configSerializer)
+        {
+            Name = "SEO Tags",
+            DatabaseType = ValueStorageType.Ntext
+        };
+        _dataTypeService.Save(dt);
+        _logger.LogInformation("Created data type: SEO Tags");
+        return dt;
+    }
+
+    private IDataType CreateBlockListDataType(string name, IContentType elementType)
+    {
+        if (!_propertyEditors.TryGet(Constants.PropertyEditors.Aliases.BlockList, out var blockListEditor))
+        {
+            _logger.LogWarning("Block List editor not found for {Name}.", name);
+            return _dataTypeService.GetDataType(Constants.DataTypes.Textbox)!;
+        }
+
+        var dt = new DataType(blockListEditor, _configSerializer)
+        {
+            Name = name,
+            DatabaseType = ValueStorageType.Ntext,
+            Configuration = new BlockListConfiguration
+            {
+                Blocks = new[]
+                {
+                    new BlockListConfiguration.BlockConfiguration
+                    {
+                        ContentElementTypeKey = elementType.Key
+                    }
+                }
+            }
+        };
+        _dataTypeService.Save(dt);
+        _logger.LogInformation("Created data type: {Name}", name);
+        return dt;
+    }
+
     private void SeedContent()
     {
-        // Only seed if no content exists at root
         var rootContent = _contentService.GetRootContent();
         if (rootContent != null && rootContent.Any())
         {
@@ -239,10 +352,9 @@ public class ContentTypeNotificationHandler
         home.SetValue("telephone", "01945 000000");
         home.SetValue("email", "info@elmlodgekennels.co.uk");
         home.SetValue("copyright", "Elm Lodge Kennels. All rights reserved.");
-        home.SetValue("openingTimes", "Monday - Friday: 8am - 6pm\nSaturday: 8am - 5pm\nSunday: 9am - 4pm");
         home.SetValue("metaTitle", "Elm Lodge Kennels - Quality Dog Boarding in Wisbech, Cambridgeshire");
         home.SetValue("metaDescription", "Elm Lodge Kennels is a family-run boarding kennels in Wisbech, Cambridgeshire, providing a relaxed, safe and friendly atmosphere for your dog.");
-        home.SetValue("metaKeywords", "dog kennels, boarding kennels, Wisbech, Cambridgeshire, dog boarding, pet care");
+        // Note: kennelFeatures, openingTimesList, and metaKeywords (tags) are best populated via the backoffice
         _contentService.SaveAndPublish(home);
 
         // ---- About Us ----
@@ -282,9 +394,10 @@ public class ContentTypeNotificationHandler
         // ---- Prices ----
         var prices = _contentService.Create("Prices", home.Id, "pricesPage");
         prices.SetValue("subtitle", "Transparent, competitive pricing for quality care");
-        prices.SetValue("bodyText", "<p>We believe in offering excellent value for the high standard of care we provide. Our prices are competitive and transparent — there are no hidden costs.</p><table><thead><tr><th>Service</th><th>Price</th></tr></thead><tbody><tr><td>Single Dog (per night)</td><td>Please enquire</td></tr><tr><td>Two Dogs (same family, per night)</td><td>Please enquire</td></tr><tr><td>Three Dogs (same family, per night)</td><td>Please enquire</td></tr></tbody></table><p>Please contact us for our most up-to-date pricing. We are happy to discuss your individual requirements and can tailor our services to suit your needs.</p>");
+        prices.SetValue("bodyText", "<p>We believe in offering excellent value for the high standard of care we provide. Our prices are competitive and transparent — there are no hidden costs. Please contact us for our most up-to-date pricing.</p>");
         prices.SetValue("metaTitle", "Prices - Elm Lodge Kennels");
         prices.SetValue("metaDescription", "View our competitive boarding kennel prices at Elm Lodge Kennels, Wisbech. Transparent pricing with no hidden costs.");
+        // Note: priceItems block list is best populated via the backoffice
         _contentService.SaveAndPublish(prices);
 
         _logger.LogInformation("Content seeding complete.");
