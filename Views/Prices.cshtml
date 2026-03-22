@@ -1,0 +1,94 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@using Umbraco.Cms.Core.Models.Blocks
+@{
+    Layout = "_Layout.cshtml";
+    var pageTitle = Model.Value<string>("metaTitle") ?? Model.Name ?? "Prices";
+    var subtitle = Model.Value<string>("subtitle") ?? "Transparent, competitive pricing for quality care";
+    var bodyText = Model.Value("bodyText");
+    var priceItems = Model.Value<BlockListModel>("priceItems");
+}
+
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <h1>@pageTitle</h1>
+        <p>@subtitle</p>
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+            <ol>
+                <li><a href="/">Home</a></li>
+                <li aria-current="page">@Model.Name</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<!-- Prices Content -->
+<section class="section section--light">
+    <div class="container">
+        <div class="prices-page">
+            <div class="section__header">
+                <h2>Our Rates</h2>
+                <div class="section__divider"></div>
+            </div>
+
+            @if (priceItems?.Any() == true)
+            {
+                <div class="content-block">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Service</th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var block in priceItems)
+                            {
+                                var serviceName = block.Content.Value<string>("serviceName");
+                                var price = block.Content.Value<string>("price");
+                                <tr>
+                                    <td>@serviceName</td>
+                                    <td>@price</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else if (bodyText != null)
+            {
+                <div class="content-block content-block--centered">
+                    @bodyText
+                </div>
+            }
+
+            <div class="prices-note">
+                <i class="fas fa-info-circle"></i>
+                <p>All prices include daily exercise, grooming, and individual care. For the most up-to-date pricing information, please contact us directly.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+    <div class="container">
+        <h2>Ready to Book?</h2>
+        <p>Contact us to check availability and make your reservation.</p>
+        @{
+            var homepage = Model.AncestorOrSelf("homepage");
+            var contactPage = homepage?.Children().FirstOrDefault(x => x.ContentType.Alias == "contactPage");
+            var telephone = homepage?.Value<string>("telephone") ?? "";
+        }
+        <div class="cta-section__buttons">
+            @if (contactPage != null)
+            {
+                <a href="@contactPage.Url()" class="btn btn--primary btn--large">Get in Touch</a>
+            }
+            @if (!string.IsNullOrEmpty(telephone))
+            {
+                <a href="tel:@telephone.Replace(" ", "")" class="btn btn--outline btn--large"><i class="fas fa-phone"></i> Call Us</a>
+            }
+        </div>
+    </div>
+</section>

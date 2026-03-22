@@ -1,0 +1,66 @@
+@use '../abstracts' as *;
+
+// ============================================
+// Forms
+// ============================================
+
+.contact-form-wrapper {
+  background: $color-bg;
+  padding: 2.5rem;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-md;
+  border: 1px solid $color-border;
+
+  h2 {
+    margin-bottom: 1.5rem;
+    color: $color-primary-dark;
+  }
+
+  @include respond-to('mobile') {
+    padding: 1.5rem;
+  }
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: $color-text;
+  }
+
+  input,
+  textarea,
+  select {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    font-family: $font-body;
+    font-size: 1rem;
+    border: 2px solid $color-border;
+    border-radius: $radius;
+    background-color: $color-bg;
+    color: $color-text;
+    transition: border-color $transition, box-shadow $transition;
+
+    &:focus {
+      outline: none;
+      border-color: $color-primary;
+      box-shadow: 0 0 0 3px rgba($color-primary, 0.15);
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+}
+
+.field-validation-error {
+  display: block;
+  color: $color-error;
+  font-size: 0.85rem;
+  margin-top: 0.35rem;
+}

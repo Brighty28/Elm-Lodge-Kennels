@@ -1,0 +1,34 @@
+// ============================================
+//  Elm Lodge Kennels - Main SCSS Entry Point
+//  Using the 7-1 Architecture Pattern
+// ============================================
+
+// 1. Vendors - Third-party stylesheets
+// (Font Awesome and Google Fonts loaded via CDN in _Layout.cshtml)
+
+// 2. Base - Reset, typography, base element styles
+@use 'base/reset';
+@use 'base/typography';
+
+// 3. Layout - Structural layout components
+@use 'layout/container';
+@use 'layout/header';
+@use 'layout/navigation';
+@use 'layout/sections';
+@use 'layout/footer';
+
+// 4. Components - Reusable UI components
+@use 'components/buttons';
+@use 'components/cards';
+@use 'components/forms';
+@use 'components/alerts';
+@use 'components/breadcrumb';
+
+// 5. Pages - Page-specific styles
+@use 'pages/home';
+@use 'pages/standard';
+@use 'pages/contact';
+@use 'pages/prices';
+
+// 6. Themes
+// (Currently using CSS variables for theming - add theme overrides here as needed)

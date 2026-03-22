@@ -1,0 +1,32 @@
+@use '../abstracts' as *;
+
+// ============================================
+// Prices Page
+// ============================================
+
+.prices-page {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.prices-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.5rem;
+  background-color: rgba($color-primary, 0.08);
+  border-radius: $radius;
+  border-left: 4px solid $color-primary;
+  margin-top: 2rem;
+
+  i {
+    color: $color-primary;
+    font-size: 1.25rem;
+    margin-top: 0.15rem;
+  }
+
+  p {
+    margin-bottom: 0;
+    color: $color-text-light;
+  }
+}
