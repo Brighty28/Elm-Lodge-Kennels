@@ -1,0 +1,57 @@
+@use '../abstracts' as *;
+
+// ============================================
+// Navigation
+// ============================================
+
+.site-nav {
+  ul {
+    display: flex;
+    list-style: none;
+    gap: 0;
+  }
+
+  li a {
+    display: block;
+    padding: 0.5rem 1.25rem;
+    color: $color-text;
+    font-weight: 500;
+    font-size: 0.95rem;
+    border-radius: $radius;
+    transition: all $transition;
+  }
+
+  li a:hover,
+  li.active a {
+    color: $color-primary;
+    background-color: rgba($color-primary, 0.08);
+  }
+
+  @include respond-to('mobile') {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    right: 0;
+    background-color: $color-bg;
+    box-shadow: $shadow-lg;
+    padding: 1rem;
+    transform: translateY(-120%);
+    opacity: 0;
+    transition: all $transition;
+    z-index: 999;
+
+    &.active {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    ul {
+      flex-direction: column;
+    }
+
+    li a {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid $color-border;
+    }
+  }
+}

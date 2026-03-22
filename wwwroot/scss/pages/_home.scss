@@ -1,0 +1,183 @@
+@use '../abstracts' as *;
+
+// ============================================
+// Home Page
+// ============================================
+
+// --- Hero Section ---
+.hero {
+  position: relative;
+  background: linear-gradient(135deg, $color-primary-dark 0%, $color-primary 50%, $color-primary-light 100%);
+  padding: 8rem 0 6rem;
+  text-align: center;
+  overflow: hidden;
+  min-height: 550px;
+  display: flex;
+  align-items: center;
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+  }
+
+  &__content {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    margin: 0 auto;
+
+    h1 {
+      color: $color-text-white;
+      font-size: clamp(2.2rem, 6vw, 3.8rem);
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    p {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      margin-bottom: 2rem;
+      line-height: 1.8;
+    }
+  }
+
+  &__buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    @include respond-to('mobile') {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+
+  @include respond-to('mobile') {
+    padding: 5rem 0 4rem;
+    min-height: auto;
+  }
+}
+
+// --- Features Bar ---
+.features-bar {
+  background-color: $color-bg;
+  padding: 3rem 0;
+  margin-top: -2rem;
+  position: relative;
+  z-index: 2;
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    background-color: $color-bg;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-lg;
+    padding: 2.5rem;
+    margin-top: -4rem;
+
+    @include respond-to('tablet') {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include respond-to('mobile') {
+      grid-template-columns: 1fr 1fr;
+      padding: 1.5rem;
+      gap: 1rem;
+      margin-top: -2rem;
+    }
+
+    @include respond-to('small') {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__item {
+    text-align: center;
+    padding: 1rem;
+
+    i {
+      font-size: 2.5rem;
+      color: $color-primary;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      color: $color-primary-dark;
+    }
+
+    p {
+      font-size: 0.9rem;
+      color: $color-text-light;
+      margin-bottom: 0;
+    }
+  }
+}
+
+// --- Services Grid ---
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+
+  @include respond-to('tablet') {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include respond-to('mobile') {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+// --- About Summary ---
+.about-summary {
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+
+  &__content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+  }
+}
+
+// --- CTA Section ---
+.cta-section {
+  @include gradient-primary;
+  padding: 5rem 0;
+  text-align: center;
+  color: $color-text-white;
+
+  h2 {
+    color: $color-text-white;
+    margin-bottom: 0.75rem;
+  }
+
+  p {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 1.15rem;
+    margin-bottom: 2rem;
+  }
+
+  &__buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  &--compact {
+    padding: 3.5rem 0;
+  }
+
+  @include respond-to('mobile') {
+    padding: 3rem 0;
+  }
+}

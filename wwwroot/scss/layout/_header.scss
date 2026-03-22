@@ -1,0 +1,128 @@
+@use '../abstracts' as *;
+
+// ============================================
+// Top Bar
+// ============================================
+
+.top-bar {
+  background-color: $color-primary-dark;
+  color: $color-text-white;
+  padding: 0.5rem 0;
+  font-size: 0.875rem;
+
+  .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__left {
+    display: flex;
+    gap: 1.5rem;
+
+    i {
+      margin-right: 0.35rem;
+    }
+
+    @include respond-to('mobile') {
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+  }
+
+  &__left a,
+  &__right a {
+    color: rgba(255, 255, 255, 0.85);
+    transition: color $transition;
+
+    &:hover {
+      color: $color-text-white;
+    }
+  }
+
+  &__right {
+    display: flex;
+    gap: 1rem;
+  }
+
+  @include respond-to('mobile') {
+    display: none;
+  }
+}
+
+// ============================================
+// Site Header
+// ============================================
+
+.site-header {
+  background-color: $color-bg;
+  box-shadow: $shadow-sm;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  padding: 0;
+
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 80px;
+  }
+
+  &__logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: $font-heading;
+    font-size: 1.5rem;
+    color: $color-primary-dark;
+    text-decoration: none;
+
+    &:hover {
+      color: $color-primary;
+    }
+
+    i {
+      font-size: 2rem;
+      color: $color-primary;
+    }
+
+    strong {
+      font-weight: 700;
+    }
+  }
+
+  &__toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+
+    span {
+      width: 28px;
+      height: 3px;
+      background-color: $color-text;
+      border-radius: 2px;
+      transition: all $transition;
+    }
+
+    &.active span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 6px);
+    }
+
+    &.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    &.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -6px);
+    }
+
+    @include respond-to('mobile') {
+      display: flex;
+    }
+  }
+}

@@ -1,0 +1,48 @@
+// ============================================
+// Variables
+// ============================================
+
+// --- Colors ---
+$color-primary: #2d6a4f;
+$color-primary-dark: #1b4332;
+$color-primary-light: #52b788;
+$color-secondary: #d4a373;
+$color-secondary-dark: #b07d4f;
+$color-accent: #e76f51;
+
+$color-text: #2d3436;
+$color-text-light: #636e72;
+$color-text-white: #ffffff;
+
+$color-bg: #ffffff;
+$color-bg-light: #f8f9fa;
+$color-bg-warm: #fdf6ec;
+$color-bg-dark: #1b4332;
+
+$color-border: #dee2e6;
+$color-success: #2d6a4f;
+$color-error: #e76f51;
+
+// --- Typography ---
+$font-heading: 'Playfair Display', Georgia, serif;
+$font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+// --- Shadows ---
+$shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+$shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12);
+
+// --- Border Radius ---
+$radius: 8px;
+$radius-lg: 16px;
+
+// --- Transitions ---
+$transition: 0.3s ease;
+
+// --- Layout ---
+$container-width: 1200px;
+
+// --- Breakpoints ---
+$breakpoint-tablet: 1024px;
+$breakpoint-mobile: 768px;
+$breakpoint-small: 480px;

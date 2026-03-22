@@ -1,0 +1,33 @@
+@use '../abstracts' as *;
+
+// ============================================
+// Breadcrumb
+// ============================================
+
+.breadcrumb {
+  ol {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    list-style: none;
+    font-size: 0.9rem;
+  }
+
+  a {
+    color: rgba(255, 255, 255, 0.75);
+
+    &:hover {
+      color: $color-text-white;
+    }
+  }
+
+  li:not(:last-child)::after {
+    content: '/';
+    margin-left: 0.5rem;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  li[aria-current="page"] {
+    color: rgba(255, 255, 255, 0.9);
+  }
+}

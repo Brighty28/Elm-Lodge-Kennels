@@ -1,0 +1,62 @@
+@use '../abstracts' as *;
+
+// ============================================
+// Buttons
+// ============================================
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 2rem;
+  font-family: $font-body;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: $radius;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all $transition;
+  text-decoration: none;
+  line-height: 1.4;
+
+  &--primary {
+    background-color: $color-primary;
+    color: $color-text-white;
+    border-color: $color-primary;
+
+    &:hover {
+      background-color: $color-primary-dark;
+      border-color: $color-primary-dark;
+      color: $color-text-white;
+      transform: translateY(-2px);
+      box-shadow: $shadow-md;
+    }
+  }
+
+  &--outline {
+    background-color: transparent;
+    color: $color-text-white;
+    border-color: $color-text-white;
+
+    &:hover {
+      background-color: $color-text-white;
+      color: $color-primary;
+      transform: translateY(-2px);
+    }
+  }
+
+  &--large {
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+
+    @include respond-to('small') {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  &--full {
+    width: 100%;
+    justify-content: center;
+  }
+}
