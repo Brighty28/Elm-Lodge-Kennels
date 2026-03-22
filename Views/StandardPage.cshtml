@@ -3,7 +3,7 @@
     Layout = "_Layout.cshtml";
     var pageTitle = Model.Value<string>("metaTitle") ?? Model.Name;
     var subtitle = Model.Value<string>("subtitle") ?? "";
-    var bodyText = Model.Value<IHtmlEncodedString>("bodyText");
+    var bodyText = Model.Value("bodyText");
     var headerImage = Model.Value<string>("headerImage");
 }
 

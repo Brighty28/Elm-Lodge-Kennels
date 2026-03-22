@@ -4,9 +4,9 @@
     var homepage = Model;
     var heroTitle = Model.Value<string>("heroTitle") ?? "Welcome to Elm Lodge Kennels";
     var heroSubtitle = Model.Value<string>("heroSubtitle") ?? "A family-run boarding kennels in the heart of Cambridgeshire, providing exceptional care for your beloved dog.";
-    var bodyText = Model.Value<IHtmlEncodedString>("bodyText");
+    var bodyText = Model.Value("bodyText");
     var servicesIntro = Model.Value<string>("servicesIntro") ?? "We take enormous pride in offering the highest standard of care and accommodation for your pets.";
-    var aboutSummary = Model.Value<IHtmlEncodedString>("aboutSummary");
+    var aboutSummary = Model.Value<IHtmlContent>("aboutSummary");
 }
 
 <!-- Hero Section -->
