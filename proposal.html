@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elm Lodge Kennels - Website Platform Upgrade Proposal</title>
+<style>
+  :root {
+    --primary: #2f6b3a;
+    --primary-dark: #1f4a27;
+    --accent: #ed786a;
+    --bg: #f7f6f2;
+    --card: #ffffff;
+    --text: #2b2b28;
+    --muted: #6b6b63;
+    --border: #e3e0d8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .hero {
+    position: relative;
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    color: #fff;
+    padding: 80px 24px 100px;
+    text-align: center;
+  }
+  .hero h1 {
+    font-size: 2.4rem;
+    margin: 0 0 8px;
+  }
+  .hero .subtitle {
+    font-size: 1.15rem;
+    opacity: 0.92;
+    margin-bottom: 4px;
+  }
+  .hero .meta {
+    margin-top: 24px;
+    font-size: 0.9rem;
+    opacity: 0.75;
+  }
+  .hero .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.35);
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .wrap {
+    max-width: 980px;
+    margin: -60px auto 0;
+    padding: 0 24px 80px;
+    position: relative;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 36px 40px;
+    margin-bottom: 28px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+  }
+  h2 {
+    color: var(--primary-dark);
+    font-size: 1.5rem;
+    margin-top: 0;
+    border-bottom: 3px solid var(--accent);
+    display: inline-block;
+    padding-bottom: 6px;
+  }
+  h3 { color: var(--primary-dark); font-size: 1.1rem; }
+  .section-num {
+    display: inline-block;
+    background: var(--primary);
+    color: #fff;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+    border-radius: 50%;
+    font-size: 0.85rem;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 18px 0;
+    font-size: 0.95rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  th {
+    background: #eef3ec;
+    color: var(--primary-dark);
+  }
+  tr:hover { background: #fbfaf7; }
+  .pill {
+    display: inline-block;
+    background: #eef3ec;
+    color: var(--primary-dark);
+    border-radius: 6px;
+    padding: 2px 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 20px 0 8px;
+  }
+  .gallery img {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+  .gallery figcaption {
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 4px;
+  }
+  .gallery figure { margin: 0; }
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 20px;
+  }
+  .feature {
+    background: #fbfaf7;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+  .feature .icon {
+    font-size: 1.4rem;
+    margin-bottom: 6px;
+    display: block;
+  }
+  .feature h4 {
+    margin: 0 0 6px;
+    color: var(--primary-dark);
+    font-size: 0.98rem;
+  }
+  .feature p {
+    margin: 0;
+    font-size: 0.87rem;
+    color: var(--muted);
+  }
+  .cost-total td, .cost-total th {
+    font-weight: 700;
+    background: #eef3ec;
+  }
+  .callout {
+    border-left: 4px solid var(--accent);
+    background: #fff6f4;
+    padding: 14px 18px;
+    border-radius: 6px;
+    margin: 18px 0;
+    font-size: 0.95rem;
+  }
+  ol.timeline {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0 0;
+    counter-reset: step;
+  }
+  ol.timeline li {
+    counter-increment: step;
+    position: relative;
+    padding-left: 46px;
+    margin-bottom: 18px;
+  }
+  ol.timeline li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+  ol.timeline li strong { color: var(--primary-dark); }
+  ol.timeline li .duration {
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .next-steps {
+    background: var(--primary-dark);
+    color: #fff;
+    border-radius: 14px;
+    padding: 36px 40px;
+    text-align: center;
+  }
+  .next-steps h2 { color: #fff; border-bottom-color: var(--accent); }
+  .next-steps ol {
+    text-align: left;
+    max-width: 560px;
+    margin: 20px auto 0;
+  }
+  .footer-note {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.82rem;
+    margin-top: 30px;
+  }
+  @media (max-width: 720px) {
+    .feature-grid { grid-template-columns: 1fr 1fr; }
+    .gallery { grid-template-columns: 1fr 1fr; }
+    .card { padding: 26px 22px; }
+  }
+  @media print {
+    .hero { padding: 40px 24px 60px; }
+    .wrap { margin-top: -30px; }
+    .card { box-shadow: none; break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="hero">
+    <div class="badge">Website Platform Upgrade Proposal</div>
+    <h1>Elm Lodge Kennels</h1>
+    <p class="subtitle">Migrating from Umbraco (.NET / C#) to Sanity.io + Next.js</p>
+    <div class="meta">Prepared for Elm Lodge Kennels &nbsp;•&nbsp; 16 June 2026</div>
+  </div>
+
+  <div class="wrap">
+
+    <div class="card">
+      <h2><span class="section-num">1</span>Executive Summary</h2>
+      <p>The current Elm Lodge Kennels website (<em>elmlodgekennels.co.uk</em>) runs on <strong>Umbraco 7</strong>, a 10+ year-old CMS built on the legacy ASP.NET MVC (.NET Framework) stack. While it has served the business well, the platform is now a liability: Umbraco 7 is long past end-of-life, the .NET Framework version it depends on is no longer the modern, supported runtime, and the hosting/licensing model is increasingly costly relative to current alternatives.</p>
+      <p>We propose rebuilding the site on a modern <strong>Sanity.io + Next.js</strong> stack - keeping every feature and page the current site offers, replicating the existing design faithfully, while gaining a faster, safer, easier-to-edit, and cheaper-to-run platform.</p>
+      <div class="callout">This is a <strong>like-for-like rebuild</strong>: visitors and staff will see the same site they know today, just running on faster, safer infrastructure underneath.</div>
+
+      <div class="gallery">
+        <figure>
+          <img src="studio/seed/images/1001/kennel-entrance.jpg" alt="Kennel entrance">
+          <figcaption>Kennel entrance</figcaption>
+        </figure>
+        <figure>
+          <img src="studio/seed/images/1002/exercise_paddock_main.jpg" alt="Exercise paddock">
+          <figcaption>Exercise paddock</figcaption>
+        </figure>
+        <figure>
+          <img src="studio/seed/images/1003/private_walk.jpg" alt="Private walk">
+          <figcaption>Private walks</figcaption>
+        </figure>
+        <figure>
+          <img src="studio/seed/images/1004/kennels-tiddles.jpg" alt="Resident at the kennels">
+          <figcaption>Happy guests</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="section-num">2</span>Why Move Away from Umbraco?</h2>
+      <table>
+        <tr><th style="width:28%;">Issue</th><th>Detail</th></tr>
+        <tr><td>End-of-life platform</td><td>Umbraco 7 reached end of support; security patches and community support are no longer reliably available.</td></tr>
+        <tr><td>Legacy .NET Framework</td><td>The site runs on classic ASP.NET MVC/WebForms hybrid (.aspx, masterpages) rather than modern .NET - harder to find developers, harder to host cheaply.</td></tr>
+        <tr><td>Heavy, server-dependent hosting</td><td>Requires a Windows/IIS server or Azure App Service plan running 24/7, plus a SQL Server database - the most expensive class of web hosting.</td></tr>
+        <tr><td>Clunky editor experience</td><td>Umbraco's backoffice (Rich Text Editor + node tree) is dated and unintuitive for day-to-day content edits.</td></tr>
+        <tr><td>Security exposure</td><td>An unsupported CMS with a public admin login (<code>/umbraco</code>) is a known target for automated attacks.</td></tr>
+        <tr><td>Slow page loads</td><td>Server-rendered ASP.NET pages with jQuery/Bootstrap-era assets are slower than modern statically-generated/edge-rendered pages.</td></tr>
+        <tr><td>Vendor/skills lock-in</td><td>Fewer developers know legacy Umbraco/WebForms each year, increasing future maintenance costs.</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2><span class="section-num">3</span>Why Sanity.io + Next.js?</h2>
+      <p><strong>Sanity.io</strong> is a modern, API-first "headless" CMS used by companies like Figma, Skims and Tata. Content is edited in a clean, customisable web Studio and delivered instantly via a fast content API - no servers to patch, no database to manage.</p>
+      <p><strong>Next.js</strong> is the industry-standard React framework for building fast, SEO-friendly websites, used by brands like Nike and TikTok's marketing sites. Pages can be pre-rendered for near-instant load times and excellent search engine visibility.</p>
+      <div class="feature-grid">
+        <div class="feature"><span class="icon">⚡</span><h4>Speed</h4><p>Pages load in a fraction of the time of the current site - better customer experience, better Google ranking.</p></div>
+        <div class="feature"><span class="icon">🔒</span><h4>Security</h4><p>No exposed CMS admin panel, no database to breach, no Windows server to patch.</p></div>
+        <div class="feature"><span class="icon">✍️</span><h4>Editing simplicity</h4><p>Staff edit prices, news, photos and pages in a clean visual Studio with instant preview, from any device.</p></div>
+        <div class="feature"><span class="icon">💷</span><h4>Lower running cost</h4><p>Typically a fraction of the cost of a Windows/SQL Server setup.</p></div>
+        <div class="feature"><span class="icon">🌱</span><h4>Future-proof</h4><p>Easy to add online booking, availability widgets, reviews or galleries later without re-platforming.</p></div>
+        <div class="feature"><span class="icon">🌍</span><h4>Reliability</h4><p>Hosted on globally distributed infrastructure rather than a single server instance.</p></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="section-num">4</span>Feature Parity - What Stays the Same</h2>
+      <p>Every feature on the current site has been reviewed in the existing codebase and is accounted for in the new build. <strong>Nothing is lost; the visual design is replicated faithfully.</strong></p>
+      <table>
+        <tr><th style="width:30%;">Current Feature</th><th>How It's Rebuilt</th></tr>
+        <tr><td>Home page with rotating slideshow</td><td>Sanity "Home Page" document with an editable slideshow array (image + caption), rendered as a fast React carousel.</td></tr>
+        <tr><td>Standard content pages (sidebar panels + features list)</td><td>Reusable Next.js template driven by a flexible Sanity "Page" document, with a block-based body editor, sidebar panels, and feature grid blocks.</td></tr>
+        <tr><td>Prices page</td><td>Dedicated "Prices" document type with a structured table field - easier to update than raw HTML.</td></tr>
+        <tr><td>Contact form (validated, configurable recipient/thank-you page)</td><td>Next.js form posting to a serverless function (e.g. Resend), same validation rules, recipient/subject/thank-you page configurable in Sanity.</td></tr>
+        <tr><td>News/Articles page (paginated, dated, summarised)</td><td>Sanity "Article" document type with a paginated Next.js listing page.</td></tr>
+        <tr><td>Client/Members area (login-gated)</td><td>Modern secure authentication (e.g. NextAuth) gating Sanity-driven pages - same restricted-access behaviour.</td></tr>
+        <tr><td>Sitemap page</td><td>Auto-generated from the Sanity page tree - always accurate, zero maintenance.</td></tr>
+        <tr><td>Site search</td><td>Modern search API replacing legacy Lucene/Examine search.</td></tr>
+        <tr><td>Top &amp; left navigation menus</td><td>Editable navigation structure in Sanity, same active-page highlighting.</td></tr>
+        <tr><td>Footer (address, phone, email, social, copyright)</td><td>Editable "Site Settings" singleton - staff update details without a developer.</td></tr>
+        <tr><td>Responsive Bootstrap-based design</td><td>Faithfully replicated with modern CSS, matching current breakpoints and look exactly.</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2><span class="section-num">5</span>What Improves Immediately</h2>
+      <ul>
+        <li><strong>Page speed</strong> - typically 2–5x faster than server-rendered ASP.NET</li>
+        <li><strong>Mobile experience</strong> - same responsive design, faster on mobile data</li>
+        <li><strong>SEO</strong> - Next.js's rendering model and clean markup tend to improve Google rankings over time</li>
+        <li><strong>Editing experience</strong> - modern, visual, real-time-preview Studio vs. Umbraco's dated backoffice</li>
+        <li><strong>Security</strong> - no public CMS admin login, no SQL Server/IIS to patch</li>
+        <li><strong>Reliability</strong> - globally distributed hosting rather than a single server instance</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2><span class="section-num">6</span>Indicative Costs</h2>
+      <p>These are <strong>ballpark planning figures</strong> for discussion - a fixed quote would follow a short discovery/scoping call.</p>
+      <h3>One-off build cost</h3>
+      <table>
+        <tr><th>Item</th><th>Estimate</th></tr>
+        <tr><td>Discovery, content audit &amp; data migration planning</td><td>£400 – £600</td></tr>
+        <tr><td>Sanity Studio setup (all schemas)</td><td>£800 – £1,200</td></tr>
+        <tr><td>Next.js front-end build (faithful design replication)</td><td>£2,500 – £3,800</td></tr>
+        <tr><td>Contact form, search &amp; members-area re-implementation</td><td>£600 – £1,000</td></tr>
+        <tr><td>Content migration (pages, articles, images)</td><td>£400 – £800</td></tr>
+        <tr><td>Testing, SEO redirects, and launch</td><td>£400 – £600</td></tr>
+        <tr class="cost-total"><td>Total estimated build cost</td><td>£5,100 – £8,000</td></tr>
+      </table>
+      <h3>Ongoing running costs</h3>
+      <table>
+        <tr><th>Item</th><th>Estimate</th></tr>
+        <tr><td>Hosting (Vercel - Next.js front-end)</td><td>£0 – £20/month</td></tr>
+        <tr><td>Sanity.io (CMS, content API, image CDN)</td><td>£0 – £20/month</td></tr>
+        <tr><td>Domain &amp; DNS</td><td>Unchanged - no new cost</td></tr>
+        <tr><td>Transactional email for contact form</td><td>£0/month (free tier)</td></tr>
+        <tr class="cost-total"><td>Estimated ongoing cost</td><td>£0 – £40/month <span class="pill">vs. £25–£80+/month today</span></td></tr>
+      </table>
+      <p style="font-size:0.85rem;color:var(--muted);">Figures exclude VAT and any optional ongoing support/retainer agreement. Exact figures confirmed after a short discovery session.</p>
+    </div>
+
+    <div class="card">
+      <h2><span class="section-num">7</span>Proposed Process &amp; Timeline</h2>
+      <ol class="timeline">
+        <li><strong>Discovery</strong><span class="duration">2–3 days</span><br>Confirm content inventory, page list, and any must-keep details.</li>
+        <li><strong>Schema &amp; Studio build</strong><span class="duration">3–5 days</span><br>Build Sanity content models for every page/content type.</li>
+        <li><strong>Front-end build</strong><span class="duration">7–10 days</span><br>Build Next.js templates replicating current design pixel-for-pixel.</li>
+        <li><strong>Content migration</strong><span class="duration">2–4 days</span><br>Move existing pages, articles, prices, images into Sanity.</li>
+        <li><strong>Forms, search, members area</strong><span class="duration">3–5 days</span><br>Re-implement contact form, search, login-gated pages.</li>
+        <li><strong>QA &amp; client review</strong><span class="duration">3–5 days</span><br>Cross-browser/device testing, client sign-off.</li>
+        <li><strong>Launch</strong><span class="duration">1 day</span><br>DNS cut-over, 301 redirects from old URLs, monitoring.</li>
+      </ol>
+      <p><strong>Estimated total: 4–6 weeks</strong>, depending on content volume and feedback turnaround.</p>
+    </div>
+
+    <div class="card">
+      <h2><span class="section-num">8</span>Risks &amp; Mitigations</h2>
+      <table>
+        <tr><th style="width:30%;">Risk</th><th>Mitigation</th></tr>
+        <tr><td>SEO impact from platform change</td><td>301 redirects for every existing URL; updated sitemap submitted to Google Search Console at launch.</td></tr>
+        <tr><td>Content migration errors</td><td>Manual review of every migrated page against the live site before launch.</td></tr>
+        <tr><td>Staff re-learning the editing tool</td><td>Sanity Studio is simpler than Umbraco's backoffice; short training session included.</td></tr>
+        <tr><td>"Client area" login security</td><td>Rebuilt with a current, actively maintained authentication library.</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2><span class="section-num">9</span>Why Act Now</h2>
+      <ul>
+        <li>Umbraco 7 receives no further security updates - every month live increases risk.</li>
+        <li>Hosting costs for legacy Windows/.NET sites are rising relative to modern alternatives.</li>
+        <li>A faster, more secure site directly benefits enquiry conversion and Google visibility for a local service business that depends on search traffic.</li>
+        <li>Migrating now, while the site is small and stable, is far cheaper and lower-risk than migrating later under pressure.</li>
+      </ul>
+    </div>
+
+    <div class="next-steps">
+      <h2><span class="section-num" style="background:var(--accent);">10</span>Next Steps</h2>
+      <ol>
+        <li>Client approval to proceed with discovery phase</li>
+        <li>Confirm any new requirements beyond feature parity (e.g. online booking enquiry, photo gallery, reviews)</li>
+        <li>Agree fixed price and timeline following discovery</li>
+        <li>Kick off build</li>
+      </ol>
+    </div>
+
+    <p class="footer-note">This proposal is based on a review of the current site's codebase and live site at elmlodgekennels.co.uk. All figures are indicative and subject to confirmation after discovery.</p>
+
+  </div>
+</body>
+</html>

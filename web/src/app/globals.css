@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+/*
+  Brand palette carried over from the legacy site's CSS (freelance.css / main.css):
+  gold #C5B358, tan header background #DECCA5, coral accent #ED786A,
+  body copy grey #777, heading grey #888.
+*/
+@theme inline {
+  --color-elk-gold: #c5b358;
+  --color-elk-tan: #decca5;
+  --color-elk-accent: #ed786a;
+  --color-elk-body: #777777;
+  --color-elk-heading: #888888;
+  --font-body: var(--font-body);
+  --font-heading: var(--font-heading);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--color-elk-heading);
+}
