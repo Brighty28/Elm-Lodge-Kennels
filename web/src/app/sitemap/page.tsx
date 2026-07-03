@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { client } from "@/sanity/client";
 import { siteMapQuery } from "@/sanity/queries";
+import PageHeader from "@/components/ui/PageHeader";
 
 type SiteMapResult = {
   pages: { title: string; slug: string }[];
@@ -12,32 +13,31 @@ export default async function SitemapPage() {
   const data = await client.fetch<SiteMapResult>(siteMapQuery);
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-12">
-      <h1 className="mb-2 text-2xl font-bold">Sitemap</h1>
-      <hr className="mb-6 w-16 border-t-2 border-elk-gold" />
-      <ul className="space-y-2">
-        <li>
-          <Link href="/" className="text-elk-accent hover:underline">
+    <div className="mx-auto max-w-3xl px-6 py-16">
+      <PageHeader title="Sitemap" />
+      <ul className="mt-8 divide-y divide-zinc-200 text-sm">
+        <li className="py-3 first:pt-0">
+          <Link href="/" className="hover:text-elk-accent-deep">
             Home
           </Link>
         </li>
         {data.priceList && (
-          <li>
-            <Link href="/prices" className="text-elk-accent hover:underline">
+          <li className="py-3">
+            <Link href="/prices" className="hover:text-elk-accent-deep">
               {data.priceList.title ?? "Prices"}
             </Link>
           </li>
         )}
         {data.articleIndex && (
-          <li>
-            <Link href="/news" className="text-elk-accent hover:underline">
+          <li className="py-3">
+            <Link href="/news" className="hover:text-elk-accent-deep">
               {data.articleIndex.title ?? "News"}
             </Link>
           </li>
         )}
         {data.pages.map((page) => (
-          <li key={page.slug}>
-            <Link href={`/${page.slug}`} className="text-elk-accent hover:underline">
+          <li key={page.slug} className="py-3">
+            <Link href={`/${page.slug}`} className="hover:text-elk-accent-deep">
               {page.title}
             </Link>
           </li>

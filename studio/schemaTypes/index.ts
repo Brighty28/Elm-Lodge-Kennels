@@ -8,6 +8,7 @@ import feature from './objects/feature'
 import contentPanel from './objects/contentPanel'
 import slide from './objects/slide'
 import priceRow from './objects/priceRow'
+import facilitySection from './objects/facilitySection'
 
 export const schemaTypes = [
   // Documents
@@ -22,4 +23,5 @@ export const schemaTypes = [
   contentPanel,
   slide,
   priceRow,
+  facilitySection,
 ]

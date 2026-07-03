@@ -55,33 +55,52 @@ export default function ContactForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-2">
-        <input
-          name="name"
-          placeholder="Name"
+        <div>
+          <label htmlFor="contact-name" className="mb-1 block text-xs font-semibold tracking-wide text-elk-body">
+            Name
+          </label>
+          <input
+            id="contact-name"
+            name="name"
+            required
+            className="w-full rounded-lg border border-zinc-300 px-4 py-2.5 focus:border-elk-accent-deep focus:outline-none"
+          />
+        </div>
+        <div>
+          <label htmlFor="contact-email" className="mb-1 block text-xs font-semibold tracking-wide text-elk-body">
+            Email
+          </label>
+          <input
+            id="contact-email"
+            name="email"
+            type="email"
+            required
+            className="w-full rounded-lg border border-zinc-300 px-4 py-2.5 focus:border-elk-accent-deep focus:outline-none"
+          />
+        </div>
+      </div>
+      <div>
+        <label htmlFor="contact-comment" className="mb-1 block text-xs font-semibold tracking-wide text-elk-body">
+          Comment
+        </label>
+        <textarea
+          id="contact-comment"
+          name="comment"
           required
-          className="rounded border border-zinc-300 px-3 py-2"
-        />
-        <input
-          name="email"
-          type="email"
-          placeholder="Email"
-          required
-          className="rounded border border-zinc-300 px-3 py-2"
+          maxLength={500}
+          rows={5}
+          className="w-full rounded-lg border border-zinc-300 px-4 py-2.5 focus:border-elk-accent-deep focus:outline-none"
         />
       </div>
-      <textarea
-        name="comment"
-        placeholder="Comment"
-        required
-        maxLength={500}
-        rows={5}
-        className="w-full rounded border border-zinc-300 px-3 py-2"
-      />
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && (
+        <p role="alert" className="text-sm text-red-600">
+          {error}
+        </p>
+      )}
       <button
         type="submit"
         disabled={submitting}
-        className="rounded bg-elk-accent px-5 py-2 font-medium text-white hover:opacity-90 disabled:opacity-60"
+        className="rounded-full bg-elk-accent-deep px-7 py-2.5 text-sm font-semibold tracking-wide text-white shadow-md transition hover:opacity-90 disabled:opacity-60"
       >
         {submitting ? "Sending…" : "Send Message"}
       </button>

@@ -23,8 +23,23 @@ export default defineType({
     defineField({
       name: 'featuresList',
       title: 'Features List',
+      description: 'Individual single-photo items, e.g. named kennels (Rio, Tiddles).',
       type: 'array',
       of: [{type: 'feature'}],
+    }),
+    defineField({
+      name: 'facilities',
+      title: 'Facilities',
+      description: 'Amenities with their own photo galleries, e.g. "Exercise Paddock" with several photos.',
+      type: 'array',
+      of: [{type: 'facilitySection'}],
+    }),
+    defineField({
+      name: 'showMap',
+      title: 'Show Map',
+      description: 'Show an OpenStreetMap embed of the business address (set under Site Settings) on this page.',
+      type: 'boolean',
+      initialValue: false,
     }),
     defineField({
       name: 'isMembersOnly',

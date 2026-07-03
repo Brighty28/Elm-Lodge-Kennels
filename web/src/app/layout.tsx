@@ -4,8 +4,8 @@ import "./globals.css";
 import { client } from "@/sanity/client";
 import { siteSettingsQuery } from "@/sanity/queries";
 import type { SiteSettings } from "@/sanity/types";
-import SiteHeader from "@/components/SiteHeader";
-import SiteFooter from "@/components/SiteFooter";
+import SiteHeader from "@/components/layout/SiteHeader";
+import SiteFooter from "@/components/layout/SiteFooter";
 
 const sourceSans = Source_Sans_3({
   variable: "--font-body",
@@ -36,9 +36,17 @@ export default async function RootLayout({
       lang="en"
       className={`${sourceSans.variable} ${montserrat.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-white font-body text-elk-body">
+      <body
+        className="flex min-h-full flex-col bg-white font-body text-elk-body"
+        suppressHydrationWarning
+      >
+        <a href="#main-content" className="skip-link">
+          Skip to main content
+        </a>
         <SiteHeader settings={settings} />
-        <main className="flex-1">{children}</main>
+        <main id="main-content" className="flex-1">
+          {children}
+        </main>
         <SiteFooter settings={settings} />
       </body>
     </html>

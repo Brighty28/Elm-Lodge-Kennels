@@ -10,12 +10,17 @@ export type NavLink = {
 export type SiteSettings = {
   title?: string;
   address?: string;
+  latitude?: number;
+  longitude?: number;
   telephone?: string;
   email?: string;
   facebookLink?: string;
   twitterLink?: string;
   instagramLink?: string;
   copyrightText?: string;
+  licenseNumber?: string;
+  creditText?: string;
+  creditUrl?: string;
   primaryNavigation?: NavLink[];
 };
 
@@ -23,6 +28,12 @@ export type Feature = {
   title?: string;
   image?: SanityImageSource;
   description?: PortableTextBlock[];
+};
+
+export type FacilitySection = {
+  title: string;
+  description?: PortableTextBlock[];
+  images?: SanityImageSource[];
 };
 
 export type Slide = {
@@ -47,6 +58,8 @@ export type Page = {
   bodyText?: PortableTextBlock[];
   contentPanels?: ContentPanel[];
   featuresList?: Feature[];
+  facilities?: FacilitySection[];
+  showMap?: boolean;
   isMembersOnly?: boolean;
   isContactPage?: boolean;
   recipientEmailAddress?: string;

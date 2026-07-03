@@ -2,7 +2,8 @@ import Link from "next/link";
 import { client } from "@/sanity/client";
 import { articleIndexQuery, articlesQuery } from "@/sanity/queries";
 import type { ArticleIndex, ArticleSummary } from "@/sanity/types";
-import RichText from "@/components/RichText";
+import RichText from "@/components/ui/RichText";
+import PageHeader from "@/components/ui/PageHeader";
 
 export default async function NewsPage({
   searchParams,
@@ -23,27 +24,28 @@ export default async function NewsPage({
   const pageItems = articles.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-12">
-      <h1 className="mb-2 text-2xl font-bold">{index?.title ?? "News"}</h1>
-      <hr className="mb-6 w-16 border-t-2 border-elk-gold" />
-      <RichText value={index?.bodyText} />
+    <div className="mx-auto max-w-3xl px-6 py-16">
+      <PageHeader title={index?.title ?? "News"} />
+      <div className="mt-8">
+        <RichText value={index?.bodyText} />
+      </div>
 
-      <ul className="mt-8 space-y-6">
+      <ul className="mt-8 divide-y divide-zinc-200">
         {pageItems.map((article) => (
-          <li key={article.slug}>
-            <h3 className="font-semibold">
-              <Link href={`/news/${article.slug}`} className="text-elk-accent hover:underline">
-                {article.title}
-              </Link>
-            </h3>
-            <p className="text-xs text-zinc-500">
+          <li key={article.slug} className="py-6 first:pt-0">
+            <p className="text-xs tracking-wide text-zinc-400">
               {new Date(article.articleDate).toLocaleDateString("en-GB", {
                 day: "2-digit",
                 month: "long",
                 year: "numeric",
               })}
             </p>
-            {article.articleSummary && <p className="mt-1 text-sm text-zinc-700">{article.articleSummary}</p>}
+            <h3 className="mt-1 text-lg">
+              <Link href={`/news/${article.slug}`} className="hover:text-elk-accent-deep">
+                {article.title}
+              </Link>
+            </h3>
+            {article.articleSummary && <p className="mt-2 text-sm text-elk-body">{article.articleSummary}</p>}
           </li>
         ))}
       </ul>
@@ -54,7 +56,7 @@ export default async function NewsPage({
             <Link
               key={p}
               href={`/news?page=${p}`}
-              className={p === currentPage ? "font-bold text-elk-accent" : "text-zinc-600 hover:underline"}
+              className={p === currentPage ? "font-bold text-elk-accent-deep" : "text-zinc-500 hover:underline"}
             >
               {p}
             </Link>

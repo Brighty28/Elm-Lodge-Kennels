@@ -1,0 +1,21 @@
+/* base/_prose — typographic defaults for rich text (Sanity Portable Text) bodies. */
+
+.prose p {
+  margin-bottom: 1em;
+  line-height: 1.75;
+}
+
+.prose ul {
+  margin: 0 0 1em 1.25em;
+  list-style: disc;
+}
+
+.prose a {
+  color: var(--color-elk-accent-deep);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--color-elk-accent-deep) 40%, transparent);
+}
+
+.prose h2, .prose h3 {
+  margin: 1.25em 0 0.5em;
+}

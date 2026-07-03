@@ -4,12 +4,17 @@ export const siteSettingsQuery = groq`
   *[_type == "siteSettings"][0]{
     title,
     address,
+    latitude,
+    longitude,
     telephone,
     email,
     facebookLink,
     twitterLink,
     instagramLink,
     copyrightText,
+    licenseNumber,
+    creditText,
+    creditUrl,
     primaryNavigation[]->{
       _type,
       title,
@@ -47,6 +52,12 @@ export const pageBySlugQuery = groq`
       image,
       description
     },
+    facilities[]{
+      title,
+      description,
+      images
+    },
+    showMap,
     isMembersOnly,
     isContactPage,
     recipientEmailAddress,

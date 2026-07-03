@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { client } from "@/sanity/client";
 import { searchQuery } from "@/sanity/queries";
+import PageHeader from "@/components/ui/PageHeader";
 
 type SearchResult = {
   _type: "page" | "article" | "priceList";
@@ -28,34 +29,40 @@ export default async function SearchPage({
     : [];
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-12">
-      <h1 className="mb-2 text-2xl font-bold">Search</h1>
-      <hr className="mb-6 w-16 border-t-2 border-elk-gold" />
+    <div className="mx-auto max-w-3xl px-6 py-16">
+      <PageHeader title="Search" />
 
-      <form className="mb-8 flex gap-2" action="/search">
+      <form className="mt-8 flex gap-2" action="/search" role="search">
+        <label htmlFor="search-input" className="sr-only">
+          Search the site
+        </label>
         <input
+          id="search-input"
           name="search"
           defaultValue={term}
           placeholder="Search the site"
-          className="flex-1 rounded border border-zinc-300 px-3 py-2"
+          className="flex-1 rounded-full border border-zinc-300 px-5 py-2.5 text-sm focus:border-elk-accent-deep focus:outline-none"
         />
-        <button type="submit" className="rounded bg-elk-accent px-5 py-2 text-white">
+        <button
+          type="submit"
+          className="rounded-full bg-elk-accent-deep px-6 py-2.5 text-sm font-semibold tracking-wide text-white transition hover:opacity-90"
+        >
           Search
         </button>
       </form>
 
-      {term && results.length === 0 && <p>No results match your search.</p>}
+      {term && results.length === 0 && <p className="mt-8 text-sm text-elk-body">No results match your search.</p>}
 
-      <ul className="space-y-4">
+      <ul className="mt-8 divide-y divide-zinc-200">
         {results.map((result, i) => (
-          <li key={i}>
-            <h3 className="font-semibold">
-              <Link href={hrefFor(result)} className="text-elk-accent hover:underline">
+          <li key={i} className="py-5 first:pt-0">
+            <h3 className="text-lg">
+              <Link href={hrefFor(result)} className="hover:text-elk-accent-deep">
                 {result.title}
               </Link>
             </h3>
             {result.snippet && (
-              <p className="text-sm text-zinc-600">{result.snippet.slice(0, 200)}</p>
+              <p className="mt-1 text-sm text-elk-body">{result.snippet.slice(0, 200)}</p>
             )}
           </li>
         ))}
