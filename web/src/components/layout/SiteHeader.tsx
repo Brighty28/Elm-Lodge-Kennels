@@ -27,7 +27,7 @@ export default function SiteHeader({ settings }: { settings: SiteSettings | null
           {settings?.title ?? "Elm Lodge Kennels"}
         </Link>
 
-        <nav aria-label="Primary" className="hidden md:block">
+        <nav aria-label="Primary" className="hidden md:flex md:items-center md:gap-6">
           <ul className="flex gap-7 text-sm font-medium text-zinc-600">
             {links.map((link) => (
               <li key={link.slug}>
@@ -37,6 +37,12 @@ export default function SiteHeader({ settings }: { settings: SiteSettings | null
               </li>
             ))}
           </ul>
+          <Link
+            href="/book"
+            className="rounded-full bg-elk-accent-deep px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:opacity-90"
+          >
+            Book Now
+          </Link>
         </nav>
 
         <button
@@ -67,6 +73,15 @@ export default function SiteHeader({ settings }: { settings: SiteSettings | null
               </Link>
             </li>
           ))}
+          <li>
+            <Link
+              href="/book"
+              onClick={() => setOpen(false)}
+              className="mt-2 inline-block rounded-full bg-elk-accent-deep px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:opacity-90"
+            >
+              Book Now
+            </Link>
+          </li>
         </ul>
       </nav>
     </header>
