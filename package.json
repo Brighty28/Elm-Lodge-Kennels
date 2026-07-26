@@ -1,0 +1,7 @@
+{
+  "name": "elm-lodge-kennels",
+  "private": true,
+  "dependencies": {
+    "next": "16.2.9"
+  }
+}
