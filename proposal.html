@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elm Lodge Kennels - Website Proposal</title>
+<style>
+  :root {
+    --primary: #decca5;
+    --primary-dark: #1f4a27;
+    --accent: #ed786a;
+    --gold: #c5b358;
+    --bg: #f7f6f2;
+    --card: #ffffff;
+    --text: #2b2b28;
+    --muted: #6b6b63;
+    --border: #e3e0d8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    font-size: 0.97rem;
+  }
+
+  /* ─── Hero ─── */
+  .hero {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 60%, #3d7a4a 100%);
+    color: #fff;
+    padding: 72px 24px 110px;
+    text-align: center;
+  }
+  .hero .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.35);
+    padding: 5px 18px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    margin-bottom: 22px;
+  }
+  .hero h1 {
+    font-size: 2.5rem;
+    margin: 0 0 10px;
+    letter-spacing: -0.01em;
+  }
+  .hero .subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+  .hero .meta {
+    margin-top: 24px;
+    font-size: 0.85rem;
+    opacity: 0.65;
+  }
+  .paw { font-size: 1.3rem; margin-bottom: 10px; display: block; }
+
+  /* ─── Layout ─── */
+  .wrap {
+    max-width: 960px;
+    margin: -60px auto 0;
+    padding: 0 24px 80px;
+    position: relative;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 38px 42px;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.05);
+  }
+
+  /* ─── Typography ─── */
+  h2 {
+    color: var(--primary-dark);
+    font-size: 1.45rem;
+    margin: 0 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  h2 .num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary);
+    color: #fff;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    font-size: 0.82rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  h3 { color: var(--primary-dark); font-size: 1.05rem; margin: 18px 0 8px; }
+  p { margin: 0 0 12px; }
+  ul { margin: 0 0 12px; padding-left: 20px; }
+  li { margin-bottom: 6px; }
+
+  /* ─── Callout box ─── */
+  .callout {
+    border-left: 4px solid var(--accent);
+    background: #fff6f4;
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin: 18px 0;
+  }
+  .callout-green {
+    border-left-color: var(--primary);
+    background: #f0f6f1;
+  }
+
+  /* ─── Photo gallery ─── */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 22px 0 4px;
+  }
+  .gallery figure { margin: 0; }
+  .gallery img {
+    width: 100%;
+    height: 125px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    display: block;
+  }
+  .gallery figcaption {
+    font-size: 0.73rem;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 5px;
+  }
+
+  /* ─── Benefit grid ─── */
+  .benefit-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-top: 18px;
+  }
+  .benefit {
+    background: #f7faf7;
+    border: 1px solid #d9e8da;
+    border-radius: 10px;
+    padding: 18px 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .benefit .icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    line-height: 1;
+    margin-top: 2px;
+  }
+  .benefit h4 { margin: 0 0 4px; font-size: 0.95rem; color: var(--primary-dark); }
+  .benefit p { margin: 0; font-size: 0.85rem; color: var(--muted); }
+
+  /* ─── Booking preview ─── */
+  .booking-preview {
+    background: #f7f6f2;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-top: 18px;
+  }
+  .booking-preview h4 {
+    margin: 0 0 14px;
+    font-size: 0.9rem;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .form-field {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 14px;
+  }
+  .form-field label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 3px;
+    letter-spacing: 0.03em;
+  }
+  .form-field .val {
+    font-size: 0.88rem;
+    color: #aaa;
+    font-style: italic;
+  }
+  .form-field.full { grid-column: 1 / -1; }
+  .btn-preview {
+    display: inline-block;
+    margin-top: 14px;
+    background: var(--accent);
+    color: #fff;
+    padding: 9px 22px;
+    border-radius: 999px;
+    font-size: 0.88rem;
+    font-weight: 600;
+  }
+
+  /* ─── CMS preview ─── */
+  .cms-preview {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 18px;
+  }
+  .cms-titlebar {
+    background: #f0ede8;
+    padding: 8px 14px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .cms-titlebar span { display: inline-block; width: 10px; height: 10px; border-radius: 50%; }
+  .cms-titlebar .r { background: #fc6058; }
+  .cms-titlebar .y { background: #fec02f; }
+  .cms-titlebar .g { background: #2aca44; }
+  .cms-titlebar .url {
+    background: #fff;
+    border-radius: 6px;
+    padding: 2px 12px;
+    font-size: 0.75rem;
+    color: #999;
+    margin-left: 8px;
+  }
+  .cms-body {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    min-height: 160px;
+  }
+  .cms-sidebar {
+    background: #1a1a2e;
+    padding: 16px 12px;
+    color: #8888aa;
+    font-size: 0.78rem;
+  }
+  .cms-sidebar ul { list-style: none; padding: 0; margin: 0; }
+  .cms-sidebar li { padding: 6px 8px; border-radius: 6px; margin-bottom: 2px; cursor: default; }
+  .cms-sidebar li.active { background: rgba(255,255,255,0.1); color: #fff; }
+  .cms-sidebar li.highlight { background: rgba(197, 179, 88, 0.2); color: var(--gold); }
+  .cms-content { padding: 18px 20px; }
+  .cms-content h5 { margin: 0 0 10px; font-size: 0.9rem; color: var(--primary-dark); }
+  .cms-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.82rem;
+  }
+  .cms-row:last-child { border-bottom: none; }
+  .status-pill {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+  .pending { background: #fff3cd; color: #7a5900; }
+  .confirmed { background: #d4edda; color: #1a6130; }
+
+  /* ─── Costs table ─── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 0.92rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  th { background: #eef3ec; color: var(--primary-dark); font-size: 0.85rem; }
+  tr:last-child td { border-bottom: none; }
+  .total td { font-weight: 700; background: #eef3ec; }
+  .pill {
+    display: inline-block;
+    background: #eef3ec;
+    color: var(--primary-dark);
+    border-radius: 6px;
+    padding: 1px 9px;
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+
+  /* ─── Timeline ─── */
+  ol.steps {
+    list-style: none;
+    padding: 0;
+    margin: 18px 0 0;
+    counter-reset: s;
+  }
+  ol.steps li {
+    counter-increment: s;
+    position: relative;
+    padding-left: 48px;
+    margin-bottom: 20px;
+  }
+  ol.steps li::before {
+    content: counter(s);
+    position: absolute;
+    left: 0; top: 0;
+    width: 32px; height: 32px;
+    line-height: 32px;
+    text-align: center;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+  ol.steps li strong { color: var(--primary-dark); }
+  ol.steps li .dur {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-left: 6px;
+  }
+
+  /* ─── CTA card ─── */
+  .cta-card {
+    background: var(--primary-dark);
+    color: #fff;
+    border-radius: 16px;
+    padding: 40px 42px;
+    text-align: center;
+  }
+  .cta-card h2 { color: #fff; justify-content: center; }
+  .cta-card p { opacity: 0.85; max-width: 520px; margin: 0 auto 20px; }
+  .cta-card ol { text-align: left; max-width: 500px; margin: 16px auto 0; }
+  .cta-card li { margin-bottom: 10px; }
+  .footer-note {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-top: 28px;
+    padding: 0 20px;
+  }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 700px) {
+    .benefit-grid { grid-template-columns: 1fr; }
+    .gallery { grid-template-columns: 1fr 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .cms-body { grid-template-columns: 1fr; }
+    .cms-sidebar { display: none; }
+    .card { padding: 26px 22px; }
+    .cta-card { padding: 30px 22px; }
+    .hero h1 { font-size: 1.9rem; }
+  }
+  @media print {
+    .hero { padding: 40px 24px 70px; }
+    .wrap { margin-top: -30px; }
+    .card { box-shadow: none; break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="hero">
+    <span class="paw">🐾</span>
+    <div class="badge">Website Proposal &nbsp;·&nbsp; July 2026</div>
+    <h1>Elm Lodge Kennels</h1>
+    <p class="subtitle">A fresh, modern website easier to manage, faster to load, and with online booking built in</p>
+    <div class="meta">Prepared by Brights Ideas for Elm Lodge Kennels</div>
+  </div>
+
+  <div class="wrap">
+
+    <!-- 1. What we're proposing -->
+    <div class="card">
+      <h2><span class="num">1</span>What we're proposing</h2>
+      <p>Your current website has served you well, but it's been running on the same software for over ten years — software that is no longer updated or supported. That leaves the site exposed to security risks and limits what it can do for your business.</p>
+      <p>We're proposing a <strong>fresh website built from the ground up</strong> keeping everything your customers already know and love, while adding new capabilities that will save you time and bring in more bookings.</p>
+
+      <div class="callout">
+        <strong>Everything you have today is carried over.</strong> Your existing pages, photos, prices, contact form and content all move to the new site your customers will recognise it immediately.
+      </div>
+
+      <div class="gallery">
+        <figure>
+          <img src="studio/seed/images/1001/kennel-entrance.jpg" alt="Kennel entrance">
+          <figcaption>Kennel entrance</figcaption>
+        </figure>
+        <figure>
+          <img src="studio/seed/images/1002/exercise_paddock_main.jpg" alt="Exercise paddock">
+          <figcaption>Exercise paddock</figcaption>
+        </figure>
+        <figure>
+          <img src="studio/seed/images/1003/private_walk.jpg" alt="Private walk">
+          <figcaption>Private walks</figcaption>
+        </figure>
+        <figure>
+          <img src="studio/seed/images/1004/kennels-tiddles.jpg" alt="Happy kennel guest">
+          <figcaption>Happy guests</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <!-- 2. What you'll get -->
+    <div class="card">
+      <h2><span class="num">2</span>What you'll get on the new site</h2>
+      <p>Here's what changes for the better for you and for your customers.</p>
+
+      <div class="benefit-grid">
+        <div class="benefit">
+          <span class="icon">📅</span>
+          <div>
+            <h4>Online booking requests</h4>
+            <p>Customers can request a stay directly from your website you'll receive each one by email and can confirm or decline. No more phone tag.</p>
+          </div>
+        </div>
+        <div class="benefit">
+          <span class="icon">✍️</span>
+          <div>
+            <h4>Update your own content</h4>
+            <p>Change your prices, add photos, write a news post all from your phone or laptop, without needing to call a developer.</p>
+          </div>
+        </div>
+        <div class="benefit">
+          <span class="icon">⚡</span>
+          <div>
+            <h4>Much faster loading</h4>
+            <p>Pages will load significantly faster than today better for customers on mobile and better for your Google ranking.</p>
+          </div>
+        </div>
+        <div class="benefit">
+          <span class="icon">🔒</span>
+          <div>
+            <h4>More secure</h4>
+            <p>Built on fully supported, modern software. No exposed admin login for hackers to target. No database that can be breached.</p>
+          </div>
+        </div>
+        <div class="benefit">
+          <span class="icon">📈</span>
+          <div>
+            <h4>Better Google visibility</h4>
+            <p>Faster sites rank higher on Google. A modern, mobile-friendly site helps more local pet owners find you when searching.</p>
+          </div>
+        </div>
+        <div class="benefit">
+          <span class="icon">🌐</span>
+          <div>
+            <h4>A platform that grows with you</h4>
+            <p>Online booking, seasonal news posts, new facility photos capabilities you can build on over time without ever starting from scratch.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Online booking -->
+    <div class="card">
+      <h2><span class="num">3</span>New: Online booking requests</h2>
+      <p>One of the biggest additions is an <strong>online booking request form</strong>. Instead of playing phone tag or waiting for an email reply, customers fill in their details, their dog's information, and their preferred dates and you receive the request immediately.</p>
+
+      <div class="callout callout-green">
+        Every booking request is also saved in your website's content system, so you have a tidy list of all past and pending enquiries in one place no more searching through your inbox.
+      </div>
+
+      <h3>What the customer fills in</h3>
+      <div class="booking-preview">
+        <h4>BOOKING REQUEST FORM</h4>
+        <div class="form-row">
+          <div class="form-field">
+            <label>Full name *</label>
+            <div class="val">e.g. Sarah Johnson</div>
+          </div>
+          <div class="form-field">
+            <label>Phone number *</label>
+            <div class="val">e.g. 07700 900123</div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field full">
+            <label>Email address *</label>
+            <div class="val">e.g. sarah@example.com</div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label>Dog name(s) *</label>
+            <div class="val">e.g. Buddy</div>
+          </div>
+          <div class="form-field">
+            <label>Breed</label>
+            <div class="val">e.g. Labrador</div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label>Size *</label>
+            <div class="val">Small / Medium / Large / XL</div>
+          </div>
+          <div class="form-field">
+            <label>Number of dogs *</label>
+            <div class="val">1</div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label>Check-in date *</label>
+            <div class="val">dd/mm/yyyy</div>
+          </div>
+          <div class="form-field">
+            <label>Check-out date *</label>
+            <div class="val">dd/mm/yyyy</div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field full">
+            <label>Special requirements or medication notes</label>
+            <div class="val">Optional</div>
+          </div>
+        </div>
+        <div class="btn-preview">Send Booking Request</div>
+      </div>
+
+      <h3>What you see in the management area</h3>
+      <div class="cms-preview">
+        <div class="cms-titlebar">
+          <span class="r"></span><span class="y"></span><span class="g"></span>
+          <span class="url">studio.elmlodgekennels.co.uk</span>
+        </div>
+        <div class="cms-body">
+          <div class="cms-sidebar">
+            <ul>
+              <li>Pages</li>
+              <li>Prices</li>
+              <li>News</li>
+              <li>Site Settings</li>
+              <li class="highlight">Bookings ✦ New</li>
+            </ul>
+          </div>
+          <div class="cms-content">
+            <h5>Booking Requests</h5>
+            <div class="cms-row">
+              <span>Sarah Johnson - Buddy (Labrador, Medium) · 14 Jul → 21 Jul</span>
+              <span class="status-pill pending">Pending</span>
+            </div>
+            <div class="cms-row">
+              <span>Mark Davies - Rosie &amp; Max (Large) · 18 Jul → 25 Jul</span>
+              <span class="status-pill confirmed">Confirmed</span>
+            </div>
+            <div class="cms-row">
+              <span>Emma Clarke - Pip (Small) · 28 Jul → 31 Jul</span>
+              <span class="status-pill pending">Pending</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. What it costs -->
+    <div class="card">
+      <h2><span class="num">4</span>What it will cost</h2>
+      <p>These are <strong>indicative figures</strong> a fixed quote would follow a short conversation to confirm exactly what you need.</p>
+
+      <h3>One-off build cost</h3>
+      <table>
+        <tr><th>What's included</th><th>Estimate</th></tr>
+        <tr><td>New website design &amp; build (all existing pages)</td><td>£500</td></tr>
+        <tr><td>Online booking request system</td><td>£200</td></tr>
+        <tr><td>Moving your existing content across</td><td>£100</td></tr>
+        <tr><td>Testing, launch &amp; Google handover</td><td>£100</td></tr>
+        <tr class="total"><td>Total estimated build cost</td><td>£900</td></tr>
+      </table>
+
+      <p style="font-size:0.83rem;color:var(--muted);">All figures exclude VAT. A fixed price will be confirmed after a short discovery conversation.</p>
+    </div>
+
+    <!-- 5. How it works -->
+    <div class="card">
+      <h2><span class="num">5</span>How it will work</h2>
+      <ol class="steps">
+        <li>
+          <strong>Quick discovery chat</strong><span class="dur">1–2 days</span><br>
+          We confirm the page list, any content changes, and exactly what you need.
+        </li>
+        <li>
+          <strong>Build the new site</strong><span class="dur">2–3 weeks</span><br>
+          We build the new website and booking system - you can see it as it comes together.
+        </li>
+        <li>
+          <strong>Move your content across</strong><span class="dur">3–5 days</span><br>
+          All your existing pages, photos, prices and news are carried over.
+        </li>
+        <li>
+          <strong>You review and sign off</strong><span class="dur">3–5 days</span><br>
+          We run through everything together and make any final tweaks.
+        </li>
+        <li>
+          <strong>Go live</strong><span class="dur">1 day</span><br>
+          We switch the site over and keep a close eye on it for the first 48 hours.
+        </li>
+        <li>
+          <strong>Brief walkthrough</strong><span class="dur">1 hour</span><br>
+          We show you how to update your prices, add photos and manage booking requests yourself.
+        </li>
+      </ol>
+      <p><strong>Estimated total: 4–6 weeks</strong></p>
+    </div>
+
+    <!-- 6. Next steps -->
+    <div class="cta-card">
+      <h2><span class="num" style="background:var(--accent);">6</span>Next steps</h2>
+      <p>Ready to move forward? Here's how we get started:</p>
+      <ol>
+        <li>Have a short call to discuss your requirements and agree what's included</li>
+        <li>We confirm the fixed price and start date</li>
+        <li>Build begins you'll be kept in the loop throughout</li>
+        <li>New site goes live, with a guided walkthrough so you feel confident managing it</li>
+      </ol>
+    </div>
+
+    <p class="footer-note">Prepared by Brights Ideas (Andrew Bright) &nbsp;·&nbsp; <a href="http://brights-solutions.com" style="color:inherit;">brights-solutions.com</a><br>Based on a review of elmlodgekennels.co.uk. All figures are indicative and will be confirmed after discovery.</p>
+
+  </div>
+</body>
+</html>

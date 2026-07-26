@@ -1,0 +1,10 @@
+/*
+  Main stylesheet entry point — assembles the layers in order, in the
+  spirit of a 7-1 architecture's main.scss: tooling first, then tokens
+  (abstracts), then bare-element defaults (base). Components and pages
+  are styled with Tailwind utility classes directly in their .tsx files.
+*/
+@import "tailwindcss";
+@import "../styles/abstracts/_tokens.css";
+@import "../styles/base/_elements.css";
+@import "../styles/base/_prose.css";

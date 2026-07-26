@@ -1,0 +1,28 @@
+/* base/_elements — default styling for bare HTML elements, no classes. */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  color: var(--color-elk-heading);
+}
+
+/* Visible only to keyboard/screen-reader users until focused. */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  padding: 0.75rem 1.25rem;
+  background: var(--color-elk-accent-deep);
+  color: #fff;
+  border-radius: 0 0 0.5rem 0;
+}
+
+.skip-link:focus {
+  left: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-elk-accent-deep);
+  outline-offset: 2px;
+}
