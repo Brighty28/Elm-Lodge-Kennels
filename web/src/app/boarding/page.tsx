@@ -28,11 +28,31 @@ function IconCheck() {
   );
 }
 
+const DEFAULT_SCHEDULE = [
+  {
+    heading: "Morning & Afternoon Play",
+    body: "Three dedicated off-lead exercise sessions in our secure paddocks, ensuring natural movement and mental stimulation.",
+  },
+  {
+    heading: "Diet & Medical Care",
+    body: "Professional diet management and precise administration of medications, including insulin for diabetic guests.",
+  },
+  {
+    heading: "Individual Attention",
+    body: "One-on-one cuddle time for every guest, mirroring the affection they receive at home.",
+  },
+  {
+    heading: "Sleep Protocol",
+    body: "Settling-down routine with soft classical music and dimmable lighting to ensure deep recovery sleep.",
+  },
+];
+
 export default async function BoardingPage() {
   const page = await client.fetch<Page | null>(pageBySlugQuery, { slug: "boarding" });
 
   const features = page?.featuresList ?? [];
   const [feat0, feat1, feat2, feat3] = features;
+  const schedule = page?.dailySchedule?.length ? page.dailySchedule : DEFAULT_SCHEDULE;
 
   return (
     <div>
@@ -45,9 +65,8 @@ export default async function BoardingPage() {
               {page?.title ?? "Boarding Excellence & Architectural Serenity"}
             </h1>
             <p className="mt-5 max-w-lg leading-relaxed text-elk-body">
-              Discover a pet retreat where medical-grade hygiene meets country-luxe
-              hospitality. Our facilities are designed from the ground up to prioritise
-              your dog&apos;s emotional and physical well-being.
+              {page?.heroSubtext ??
+                "Discover a pet retreat where medical-grade hygiene meets country-luxe hospitality. Our facilities are designed from the ground up to prioritise your dog's emotional and physical well-being."}
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link
@@ -88,10 +107,8 @@ export default async function BoardingPage() {
             Booking Requirements
           </p>
           <p className="mt-1 text-sm leading-relaxed text-amber-800">
-            Please note: A minimum{" "}
-            <strong className="font-semibold">14-day lead time</strong> is required
-            for the Kennel Cough vaccination prior to boarding. We cannot accept pets
-            without valid certification.
+            {page?.bookingNotice ??
+              "Please note: A minimum 14-day lead time is required for the Kennel Cough vaccination prior to boarding. We cannot accept pets without valid certification."}
           </p>
         </div>
       </section>
@@ -144,7 +161,7 @@ export default async function BoardingPage() {
               {feat2?.title ?? "Stress-Free Acoustic Design"}
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-zinc-300">
-              Traditional kennel layouts encourage &ldquo;chain-reaction barking.&rdquo; Our
+              Traditional kennel layouts encourage chain-reaction barking. Our
               facility features an innovative angled design that prevents direct
               line-of-sight between dogs, significantly reducing noise levels and
               environmental stress.
@@ -193,24 +210,7 @@ export default async function BoardingPage() {
               <h2 className="text-xl font-bold text-elk-heading">A Day at Elm Lodge</h2>
             </div>
             <div className="mt-5 grid grid-cols-2 gap-5">
-              {[
-                {
-                  heading: "Morning & Afternoon Play",
-                  body: "Three dedicated off-lead exercise sessions in our secure paddocks, ensuring natural movement and mental stimulation.",
-                },
-                {
-                  heading: "Diet & Medical Care",
-                  body: "Professional diet management and precise administration of medications, including insulin for diabetic guests.",
-                },
-                {
-                  heading: "Individual Attention",
-                  body: "One-on-one “cuddle time” for every guest, mirroring the affection they receive at home.",
-                },
-                {
-                  heading: "Sleep Protocol",
-                  body: "Settling-down routine with soft classical music and dimmable lighting to ensure deep recovery sleep.",
-                },
-              ].map((item) => (
+              {schedule.map((item) => (
                 <div key={item.heading}>
                   <p className="text-xs font-semibold text-elk-gold">{item.heading}</p>
                   <p className="mt-1 text-xs leading-relaxed text-elk-body">{item.body}</p>
@@ -246,7 +246,6 @@ export default async function BoardingPage() {
                 <div key={i} className="aspect-square rounded-2xl bg-elk-cream" />
               )
             )}
-            {/* Fill empty slots if fewer than 4 features */}
             {Array.from({ length: Math.max(0, 4 - features.length) }).map((_, i) => (
               <div key={`empty-${i}`} className="aspect-square rounded-2xl bg-elk-cream" />
             ))}

@@ -6,9 +6,17 @@ import Link from "next/link";
 const STOCK_HERO =
   "https://images.unsplash.com/photo-1587300003388-59208cc962cb?auto=format&fit=crop&w=1920&q=80";
 
-export default function Hero() {
+type Props = {
+  headline?: string;
+  subtext?: string;
+};
+
+export default function Hero({
+  headline = "A Holiday Destination for Your Pet.",
+  subtext = "Premium 5-star boarding in the heart of Nottinghamshire. Where luxury meets the countryside, providing a stress-free haven for your furry companions.",
+}: Props) {
   return (
-    <section className="relative flex min-h-[88vh] items-center justify-center overflow-hidden">
+    <section className="relative flex min-h-[77vh] items-center justify-center overflow-hidden">
       <Image
         src={STOCK_HERO}
         alt="Golden retriever running through a green countryside field"
@@ -23,11 +31,10 @@ export default function Hero() {
 
       <div className="relative z-10 mx-auto max-w-3xl px-6 py-28 text-center">
         <h1 className="text-balance text-5xl font-bold leading-tight text-white sm:text-6xl lg:text-7xl">
-          A Holiday Destination for Your Pet.
+          {headline}
         </h1>
         <p className="mx-auto mt-6 max-w-xl text-lg text-white/85">
-          Premium 5-star boarding in the heart of Nottinghamshire. Where luxury
-          meets the countryside, providing a stress-free haven for your furry companions.
+          {subtext}
         </p>
         <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
           <Link

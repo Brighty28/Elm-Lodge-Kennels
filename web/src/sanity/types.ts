@@ -49,11 +49,26 @@ export type Slide = {
   caption?: PortableTextBlock[];
 };
 
+export type ScheduleItem = {
+  heading?: string;
+  body?: string;
+};
+
 export type HomePage = {
-  title?: string;
-  bodyText?: PortableTextBlock[];
-  slideshow?: Slide[];
+  heroHeadline?: string;
+  heroSubtext?: string;
+  architectureEyebrow?: string;
+  architectureHeading?: string;
+  architectureBody?: string;
+  architectureImage?: SanityImageSource;
+  countryLuxeHeading?: string;
+  countryLuxeSubtext?: string;
   featuresList?: Feature[];
+  whatsappHeading?: string;
+  whatsappSubtext?: string;
+  whatsappChecklist?: string[];
+  ctaHeading?: string;
+  ctaSubtext?: string;
 };
 
 export type ContentPanel = {
@@ -63,10 +78,13 @@ export type ContentPanel = {
 
 export type Page = {
   title: string;
+  heroSubtext?: string;
   bodyText?: PortableTextBlock[];
   contentPanels?: ContentPanel[];
   featuresList?: Feature[];
   facilities?: FacilitySection[];
+  bookingNotice?: string;
+  dailySchedule?: ScheduleItem[];
   showMap?: boolean;
   isMembersOnly?: boolean;
   isContactPage?: boolean;

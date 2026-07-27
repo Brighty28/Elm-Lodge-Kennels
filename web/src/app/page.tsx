@@ -4,6 +4,7 @@ import { client } from "@/sanity/client";
 import { homePageQuery } from "@/sanity/queries";
 import type { HomePage } from "@/sanity/types";
 import Hero from "@/components/layout/Hero";
+import { urlForImage } from "@/sanity/image";
 
 /* ── inline icons ──────────────────────────────────────────── */
 function IconThermometer() {
@@ -50,6 +51,8 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
   );
 }
 
+const CARD_ICONS = [<IconThermometer key={0} />, <IconHeat key={1} />, <IconFloor key={2} />];
+
 const DEFAULT_FEATURES = [
   {
     icon: <IconThermometer />,
@@ -68,38 +71,56 @@ const DEFAULT_FEATURES = [
   },
 ];
 
+const DEFAULT_CHECKLIST = [
+  "Real-time status reports",
+  "Video clips of play sessions",
+  "Direct line to our caregivers",
+];
+
 export default async function Home() {
   const home = await client.fetch<HomePage | null>(homePageQuery);
 
   const sanityFeatures = home?.featuresList ?? [];
+  const checklist = home?.whatsappChecklist?.length ? home.whatsappChecklist : DEFAULT_CHECKLIST;
 
   return (
     <div>
       {/* 1. Full-bleed hero */}
-      <Hero />
+      <Hero
+        headline={home?.heroHeadline}
+        subtext={home?.heroSubtext}
+      />
 
       {/* 2. Architecture of Calm */}
       <section className="bg-elk-cream px-6 py-24">
         <div className="mx-auto max-w-6xl">
-          <Eyebrow>Thoughtful Design</Eyebrow>
+          <Eyebrow>{home?.architectureEyebrow ?? "Thoughtful Design"}</Eyebrow>
           <h2 className="mt-3 max-w-lg text-4xl font-bold text-elk-heading">
-            The Architecture of Calm
+            {home?.architectureHeading ?? "The Architecture of Calm"}
           </h2>
           <div className="mt-10 overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm sm:flex">
             <div className="flex-1 p-8 sm:p-10">
               <p className="leading-relaxed text-elk-body">
-                Our facility isn&apos;t just a kennel; it&apos;s a meticulously designed
-                sanctuary. The{" "}
-                <strong className="font-semibold text-elk-heading">angled layout</strong>{" "}
-                ensures pets don&apos;t experience direct eye contact with others,
-                significantly reducing territorial stress and noise levels. Large vistas
-                of the Nottinghamshire landscape provide constant visual enrichment.
+                {home?.architectureBody ??
+                  "Our facility isn't just a kennel; it's a meticulously designed sanctuary. The angled layout ensures pets don't experience direct eye contact with others, significantly reducing territorial stress and noise levels. Large vistas of the Nottinghamshire landscape provide constant visual enrichment."}
               </p>
             </div>
-            <div className="flex w-64 shrink-0 items-center justify-center bg-elk-cream-mid p-8 max-sm:hidden">
-              <p className="text-center font-heading text-xl font-bold text-elk-forest opacity-40">
-                Elm Lodge<br />Kennels
-              </p>
+            <div className="relative w-64 shrink-0 overflow-hidden bg-elk-cream-mid max-sm:hidden">
+              {home?.architectureImage ? (
+                <Image
+                  src={urlForImage(home.architectureImage).width(256).height(256).url()}
+                  alt="Elm Lodge Kennels facility"
+                  fill
+                  sizes="256px"
+                  className="object-cover"
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center p-8">
+                  <p className="text-center font-heading text-xl font-bold text-elk-forest opacity-40">
+                    Elm Lodge<br />Kennels
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -109,17 +130,19 @@ export default async function Home() {
       <section className="bg-elk-cream-mid px-6 py-24">
         <div className="mx-auto max-w-6xl">
           <div className="mb-12 text-center">
-            <h2 className="text-4xl font-bold text-elk-heading">Country-Luxe Experience</h2>
+            <h2 className="text-4xl font-bold text-elk-heading">
+              {home?.countryLuxeHeading ?? "Country-Luxe Experience"}
+            </h2>
             <p className="mt-3 italic text-elk-gold">
-              Uncompromising comfort in a rustic setting, utilising modern technology
-              to maintain a perfect climate year-round.
+              {home?.countryLuxeSubtext ??
+                "Uncompromising comfort in a rustic setting, utilising modern technology to maintain a perfect climate year-round."}
             </p>
           </div>
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {(sanityFeatures.length > 0
               ? sanityFeatures.slice(0, 3).map((f, i) => ({
-                  icon: [<IconThermometer key={0} />, <IconHeat key={1} />, <IconFloor key={2} />][i],
+                  icon: CARD_ICONS[i] ?? CARD_ICONS[0],
                   title: f.title ?? "",
                   desc: (() => {
                     const block = f.description?.[0];
@@ -177,18 +200,15 @@ export default async function Home() {
 
           {/* Text */}
           <div>
-            <h2 className="text-4xl font-bold text-elk-heading">WhatsApp Pet Updates</h2>
+            <h2 className="text-4xl font-bold text-elk-heading">
+              {home?.whatsappHeading ?? "WhatsApp Pet Updates"}
+            </h2>
             <p className="mt-4 leading-relaxed text-elk-gold">
-              Distance shouldn&apos;t mean disconnect. We provide daily high-definition photo
-              and video updates directly to your WhatsApp, so you can enjoy your holiday
-              knowing your pet is enjoying theirs.
+              {home?.whatsappSubtext ??
+                "Distance shouldn't mean disconnect. We provide daily high-definition photo and video updates directly to your WhatsApp, so you can enjoy your holiday knowing your pet is enjoying theirs."}
             </p>
             <ul className="mt-6 space-y-3">
-              {[
-                "Real-time status reports",
-                "Video clips of play sessions",
-                "Direct line to our caregivers",
-              ].map((item) => (
+              {checklist.map((item) => (
                 <li key={item} className="flex items-center gap-3 text-sm text-elk-body">
                   <IconCheck />
                   {item}
@@ -201,9 +221,12 @@ export default async function Home() {
 
       {/* 5. CTA */}
       <section className="bg-elk-cream px-6 py-24 text-center">
-        <h2 className="text-4xl font-bold text-elk-heading">Ready to Book a 5-Star Stay?</h2>
+        <h2 className="text-4xl font-bold text-elk-heading">
+          {home?.ctaHeading ?? "Ready to Book a 5-Star Stay?"}
+        </h2>
         <p className="mt-3 italic text-elk-gold">
-          Limited suites available for seasonal holidays. Secure your pet&apos;s luxury retreat today.
+          {home?.ctaSubtext ??
+            "Limited suites available for seasonal holidays. Secure your pet's luxury retreat today."}
         </p>
         <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
           <Link
