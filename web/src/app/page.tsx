@@ -140,26 +140,47 @@ export default async function Home() {
           </div>
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {(sanityFeatures.length > 0
-              ? sanityFeatures.slice(0, 3).map((f, i) => ({
-                  icon: CARD_ICONS[i] ?? CARD_ICONS[0],
-                  title: f.title ?? "",
-                  desc: (() => {
+            {sanityFeatures.length > 0
+              ? sanityFeatures.slice(0, 3).map((f, i) => {
+                  const desc = (() => {
                     const block = f.description?.[0];
                     if (!block || !("children" in block)) return "";
                     return (block as { children: Array<{ text?: string }> }).children
                       .map((c) => c.text ?? "")
                       .join("");
-                  })(),
-                }))
-              : DEFAULT_FEATURES
-            ).map((card) => (
-              <div key={card.title} className="rounded-2xl border border-zinc-200 bg-white p-7 shadow-sm">
-                <div className="text-elk-gold">{card.icon}</div>
-                <h3 className="mt-4 text-lg font-bold text-elk-heading">{card.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-elk-body">{card.desc}</p>
-              </div>
-            ))}
+                  })();
+                  return (
+                    <div key={f.title ?? i} className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm">
+                      {f.image ? (
+                        <div className="relative aspect-[4/3] w-full">
+                          <Image
+                            src={urlForImage(f.image).width(500).height(375).url()}
+                            alt={f.title ?? ""}
+                            fill
+                            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                            className="object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <div className="flex h-36 items-center justify-center bg-elk-cream-mid text-elk-gold">
+                          {CARD_ICONS[i] ?? CARD_ICONS[0]}
+                        </div>
+                      )}
+                      <div className="p-7">
+                        <h3 className="text-lg font-bold text-elk-heading">{f.title}</h3>
+                        {desc && <p className="mt-2 text-sm leading-relaxed text-elk-body">{desc}</p>}
+                      </div>
+                    </div>
+                  );
+                })
+              : DEFAULT_FEATURES.map((card) => (
+                  <div key={card.title} className="rounded-2xl border border-zinc-200 bg-white p-7 shadow-sm">
+                    <div className="text-elk-gold">{card.icon}</div>
+                    <h3 className="mt-4 text-lg font-bold text-elk-heading">{card.title}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-elk-body">{card.desc}</p>
+                  </div>
+                ))
+            }
           </div>
         </div>
       </section>
