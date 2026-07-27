@@ -1,7 +1,8 @@
+import Image from "next/image";
 import Link from "next/link";
 import { client } from "@/sanity/client";
-import { homePageQuery, siteSettingsQuery } from "@/sanity/queries";
-import type { HomePage, SiteSettings } from "@/sanity/types";
+import { homePageQuery } from "@/sanity/queries";
+import type { HomePage } from "@/sanity/types";
 import Hero from "@/components/layout/Hero";
 
 /* ── inline icons ──────────────────────────────────────────── */
@@ -68,17 +69,14 @@ const DEFAULT_FEATURES = [
 ];
 
 export default async function Home() {
-  const [home] = await Promise.all([
-    client.fetch<HomePage | null>(homePageQuery),
-    client.fetch<SiteSettings | null>(siteSettingsQuery),
-  ]);
+  const home = await client.fetch<HomePage | null>(homePageQuery);
 
   const sanityFeatures = home?.featuresList ?? [];
 
   return (
     <div>
       {/* 1. Full-bleed hero */}
-      <Hero slides={home?.slideshow} />
+      <Hero />
 
       {/* 2. Architecture of Calm */}
       <section className="bg-elk-cream px-6 py-24">
@@ -159,7 +157,15 @@ export default async function Home() {
                     Good morning! Barnaby just finished his woodland walk and is enjoying his breakfast.
                   </p>
                 </div>
-                <div className="aspect-[4/3] w-full rounded-xl bg-elk-cream-mid" />
+                <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl">
+                  <Image
+                    src="https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?auto=format&fit=crop&w=400&q=80"
+                    alt="Happy dog enjoying their stay"
+                    fill
+                    sizes="208px"
+                    className="object-cover"
+                  />
+                </div>
                 <div className="ml-auto max-w-[90%] rounded-2xl rounded-tr-none bg-elk-forest px-3 py-2.5">
                   <p className="text-[11px] leading-relaxed text-white">
                     He&apos;s been such a good boy today!
@@ -197,7 +203,7 @@ export default async function Home() {
       <section className="bg-elk-forest px-6 py-24 text-white">
         <div className="mx-auto grid max-w-6xl items-center gap-16 lg:grid-cols-2">
           <div>
-            <h2 className="text-4xl font-bold">Expert Care, Guaranteed</h2>
+            <h2 className="text-4xl font-bold text-white">Expert Care, Guaranteed</h2>
             <p className="mt-4 leading-relaxed text-zinc-300">
               Our team consists of certified animal behaviourists and first-aid trained
               specialists. We don&apos;t just watch your pets; we understand them. From
@@ -216,8 +222,24 @@ export default async function Home() {
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <div className="aspect-[3/4] rounded-2xl bg-white/10" />
-            <div className="aspect-[3/4] translate-y-6 rounded-2xl bg-white/10" />
+            <div className="relative aspect-[3/4] overflow-hidden rounded-2xl">
+              <Image
+                src="https://images.unsplash.com/photo-1548767797-d8c844163c4a?auto=format&fit=crop&w=500&q=80"
+                alt="Kennel handler caring for a dog"
+                fill
+                sizes="(min-width: 1024px) 25vw, 50vw"
+                className="object-cover"
+              />
+            </div>
+            <div className="relative aspect-[3/4] translate-y-6 overflow-hidden rounded-2xl">
+              <Image
+                src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=500&q=80"
+                alt="Professional dog care and first aid supplies"
+                fill
+                sizes="(min-width: 1024px) 25vw, 50vw"
+                className="object-cover"
+              />
+            </div>
           </div>
         </div>
       </section>

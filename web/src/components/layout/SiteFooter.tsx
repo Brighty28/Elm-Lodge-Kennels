@@ -44,7 +44,7 @@ export default function SiteFooter({ settings }: { settings: SiteSettings | null
 
         {/* Services */}
         <div>
-          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-zinc-500">Services</h3>
+          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-zinc-400">Services</h3>
           <ul className="mt-4 space-y-2.5 text-sm text-zinc-400">
             <li><Link href="/boarding" className="transition hover:text-white">Boarding</Link></li>
             <li><Link href="/cattery" className="transition hover:text-white">Cattery</Link></li>
@@ -55,7 +55,7 @@ export default function SiteFooter({ settings }: { settings: SiteSettings | null
 
         {/* Company */}
         <div>
-          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-zinc-500">Company</h3>
+          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-zinc-400">Company</h3>
           <ul className="mt-4 space-y-2.5 text-sm text-zinc-400">
             <li><Link href="/about-us" className="transition hover:text-white">About Us</Link></li>
             <li><Link href="/contact-us" className="transition hover:text-white">Contact</Link></li>
@@ -66,7 +66,7 @@ export default function SiteFooter({ settings }: { settings: SiteSettings | null
 
         {/* Social */}
         <div>
-          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-zinc-500">Follow Us</h3>
+          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-zinc-400">Follow Us</h3>
           <div className="mt-4 flex gap-3">
             {settings?.instagramLink && (
               <a

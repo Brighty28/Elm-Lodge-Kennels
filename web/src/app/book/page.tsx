@@ -15,7 +15,7 @@ export default function BookPage() {
         availability and answer any questions. We can also administer medication at no extra charge.
       </p>
 
-      <div className="mt-10">
+      <div className="mt-10 rounded-2xl bg-white p-8 shadow-sm">
         <BookingForm />
       </div>
     </div>

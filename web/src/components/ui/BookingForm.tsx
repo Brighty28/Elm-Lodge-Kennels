@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 const SIZES = ["Daycare", "Small", "Medium", "Large", "Extra Large"] as const;
 
 const fieldClass =
-  "w-full rounded-lg border border-zinc-300 px-4 py-2.5 focus:border-elk-accent-deep focus:outline-none";
+  "w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-elk-heading focus:border-elk-forest focus:outline-none focus:ring-1 focus:ring-elk-forest";
 const labelClass = "mb-1 block text-xs font-semibold tracking-wide text-elk-body";
 
 export default function BookingForm() {
@@ -149,7 +149,7 @@ export default function BookingForm() {
       <button
         type="submit"
         disabled={submitting}
-        className="rounded-full bg-elk-accent-deep px-8 py-3 text-sm font-semibold tracking-wide text-white shadow-md transition hover:opacity-90 disabled:opacity-60"
+        className="rounded-full bg-elk-forest px-8 py-3 text-sm font-semibold tracking-wide text-white shadow-md transition hover:bg-elk-forest-mid disabled:opacity-60"
       >
         {submitting ? "Sending…" : "Send Booking Request"}
       </button>
