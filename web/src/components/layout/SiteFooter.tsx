@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { FaPaw } from "react-icons/fa6";
 import type { SiteSettings } from "@/sanity/types";
 
 function FacebookIcon() {
@@ -26,85 +25,99 @@ function InstagramIcon() {
   );
 }
 
+const SOCIAL_BTN = "flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-zinc-300 transition hover:bg-white/20 hover:text-white";
+
 export default function SiteFooter({ settings }: { settings: SiteSettings | null }) {
   const year = new Date().getFullYear();
+  const hours = settings?.openingHours ?? [];
+  const hasSocial = settings?.instagramLink || settings?.facebookLink || settings?.twitterLink;
 
   return (
-    <footer className="mt-auto bg-zinc-900 text-zinc-300">
-      <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 sm:grid-cols-3">
-        <div>
-          <p className="inline-flex items-center gap-2 font-heading text-lg font-bold text-elk-gold">
-            <FaPaw aria-hidden="true" />
+    <footer className="mt-auto bg-elk-forest text-zinc-300">
+      <div className="mx-auto grid max-w-6xl gap-10 px-6 py-16 sm:grid-cols-2 lg:grid-cols-4">
+
+        {/* Branding + social */}
+        <div className="lg:col-span-1">
+          <p className="font-heading text-lg font-bold text-white">
             {settings?.title ?? "Elm Lodge Kennels"}
           </p>
-          <p className="mt-3 text-sm text-zinc-400">
-            Exercise Paddock &middot; Private Walks &middot; Undercover Runs
+          <p className="mt-3 text-sm leading-relaxed text-zinc-400">
+            The region&apos;s premier 5-star pet retreat, where every guest is treated like family.
           </p>
+          {hasSocial && (
+            <div className="mt-5 flex gap-3">
+              {settings?.instagramLink && (
+                <a href={settings.instagramLink} aria-label="Instagram" className={SOCIAL_BTN}>
+                  <InstagramIcon />
+                </a>
+              )}
+              {settings?.facebookLink && (
+                <a href={settings.facebookLink} aria-label="Facebook" className={SOCIAL_BTN}>
+                  <FacebookIcon />
+                </a>
+              )}
+              {settings?.twitterLink && (
+                <a href={settings.twitterLink} aria-label="Twitter / X" className={SOCIAL_BTN}>
+                  <TwitterIcon />
+                </a>
+              )}
+            </div>
+          )}
         </div>
 
+        {/* Services */}
         <div>
-          <h3 className="text-xs font-semibold tracking-wide text-zinc-500">Get in Touch</h3>
-          <ul className="mt-3 space-y-1.5 text-sm">
-            {settings?.address && <li>{settings.address}</li>}
-            {settings?.telephone && <li>{settings.telephone}</li>}
-            {settings?.email && <li>{settings.email}</li>}
+          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-zinc-400">Services</h3>
+          <ul className="mt-4 space-y-2.5 text-sm text-zinc-400">
+            <li><Link href="/boarding" className="transition hover:text-white">Boarding</Link></li>
+            <li><Link href="/cattery" className="transition hover:text-white">Cattery</Link></li>
+            <li><Link href="/daycare" className="transition hover:text-white">Daycare</Link></li>
+            <li><Link href="/grooming" className="transition hover:text-white">Grooming</Link></li>
           </ul>
         </div>
 
-        <div className="sm:text-right">
-          <h3 className="text-xs font-semibold tracking-wide text-zinc-500">Follow Us</h3>
-          <div className="mt-3 flex gap-3 sm:justify-end">
-            {settings?.facebookLink && (
-              <a
-                href={settings.facebookLink}
-                aria-label="Facebook"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-zinc-800 text-zinc-300 transition hover:bg-elk-accent-deep hover:text-white"
-              >
-                <FacebookIcon />
-              </a>
-            )}
-            {settings?.twitterLink && (
-              <a
-                href={settings.twitterLink}
-                aria-label="Twitter"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-zinc-800 text-zinc-300 transition hover:bg-elk-accent-deep hover:text-white"
-              >
-                <TwitterIcon />
-              </a>
-            )}
-            {settings?.instagramLink && (
-              <a
-                href={settings.instagramLink}
-                aria-label="Instagram"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-zinc-800 text-zinc-300 transition hover:bg-elk-accent-deep hover:text-white"
-              >
-                <InstagramIcon />
-              </a>
-            )}
-          </div>
+        {/* Company */}
+        <div>
+          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-zinc-400">Company</h3>
+          <ul className="mt-4 space-y-2.5 text-sm text-zinc-400">
+            <li><Link href="/about-us" className="transition hover:text-white">About Us</Link></li>
+            <li><Link href="/contact-us" className="transition hover:text-white">Contact</Link></li>
+            <li><Link href="/privacy-policy" className="transition hover:text-white">Privacy Policy</Link></li>
+            <li><Link href="/booking-terms" className="transition hover:text-white">Booking T&Cs</Link></li>
+          </ul>
         </div>
+
+        {/* Opening Hours */}
+        <div>
+          <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-zinc-400">Opening Hours</h3>
+          {hours.length > 0 ? (
+            <ul className="mt-4 space-y-2.5 text-sm">
+              {hours.map((row) => (
+                <li key={row.days} className="flex items-start justify-between gap-3">
+                  <span className="text-zinc-400">{row.days}</span>
+                  <span className="shrink-0 font-medium text-white">{row.hours}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-4 text-sm text-zinc-400">
+              See our{" "}
+              <Link href="/contact-us" className="underline underline-offset-2 transition hover:text-white">
+                contact page
+              </Link>{" "}
+              for hours.
+            </p>
+          )}
+        </div>
+
       </div>
 
-      <div className="border-t border-zinc-800 px-6 py-5 text-center text-xs text-zinc-500">
+      <div className="border-t border-white/10 px-6 py-5 text-center text-xs text-zinc-500">
         <p>
-          {settings?.licenseNumber && <>License Number: {settings.licenseNumber} &middot; </>}
-          &copy; {year} {settings?.copyrightText ?? settings?.title ?? "Elm Lodge Kennels"} &middot;{" "}
-          <Link href="/sitemap" className="hover:text-zinc-300">
-            Sitemap
-          </Link>
-          {settings?.creditText && (
-            <>
-              {" "}
-              &middot;{" "}
-              {settings.creditUrl ? (
-                <a href={settings.creditUrl} className="hover:text-zinc-300">
-                  {settings.creditText}
-                </a>
-              ) : (
-                settings.creditText
-              )}
-            </>
-          )}
+          &copy; {year} {settings?.copyrightText ?? settings?.title ?? "Elm Lodge Kennels"}
+          {settings?.licenseNumber && <> &middot; 5-Star Licensed Pet Retreat</>}
+          {" "}&middot;{" "}
+          <Link href="/sitemap" className="hover:text-zinc-300">Sitemap</Link>
         </p>
       </div>
     </footer>

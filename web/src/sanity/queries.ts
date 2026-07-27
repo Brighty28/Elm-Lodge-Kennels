@@ -15,6 +15,9 @@ export const siteSettingsQuery = groq`
     licenseNumber,
     creditText,
     creditUrl,
+    openingHours[]{days, hours},
+    openingHoursNote,
+    contactSubjects,
     primaryNavigation[]->{
       _type,
       title,
@@ -25,23 +28,27 @@ export const siteSettingsQuery = groq`
 
 export const homePageQuery = groq`
   *[_type == "homePage"][0]{
-    title,
-    bodyText,
-    slideshow[]{
-      image,
-      caption
-    },
-    featuresList[]{
-      title,
-      image,
-      description
-    }
+    heroHeadline,
+    heroSubtext,
+    architectureEyebrow,
+    architectureHeading,
+    architectureBody,
+    architectureImage,
+    countryLuxeHeading,
+    countryLuxeSubtext,
+    featuresList[]{ title, image, description },
+    whatsappHeading,
+    whatsappSubtext,
+    whatsappChecklist,
+    ctaHeading,
+    ctaSubtext
   }
 `
 
 export const pageBySlugQuery = groq`
   *[_type == "page" && slug.current == $slug][0]{
     title,
+    heroSubtext,
     bodyText,
     contentPanels[]{
       heading,
@@ -57,6 +64,8 @@ export const pageBySlugQuery = groq`
       description,
       images
     },
+    bookingNotice,
+    dailySchedule[]{ heading, body },
     showMap,
     isMembersOnly,
     isContactPage,

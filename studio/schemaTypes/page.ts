@@ -35,6 +35,37 @@ export default defineType({
       of: [{type: 'facilitySection'}],
     }),
     defineField({
+      name: 'heroSubtext',
+      title: 'Hero Paragraph',
+      description: 'Short paragraph shown below the title in the page hero (e.g. Boarding, Cattery pages).',
+      type: 'text',
+      rows: 3,
+    }),
+    defineField({
+      name: 'bookingNotice',
+      title: 'Booking Notice',
+      description: 'Important notice displayed in the amber alert box (e.g. vaccination requirements).',
+      type: 'text',
+      rows: 2,
+    }),
+    defineField({
+      name: 'dailySchedule',
+      title: 'Daily Schedule',
+      description: 'Items for the "A Day at…" schedule section on service pages.',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          name: 'scheduleItem',
+          fields: [
+            defineField({name: 'heading', title: 'Heading', type: 'string'}),
+            defineField({name: 'body', title: 'Description', type: 'text', rows: 2}),
+          ],
+          preview: {select: {title: 'heading'}},
+        },
+      ],
+    }),
+    defineField({
       name: 'showMap',
       title: 'Show Map',
       description: 'Show an OpenStreetMap embed of the business address (set under Site Settings) on this page.',

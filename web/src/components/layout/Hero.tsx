@@ -1,108 +1,55 @@
 import Image from "next/image";
 import Link from "next/link";
-import { FaPaw } from "react-icons/fa6";
-import type { PortableTextBlock } from "@portabletext/types";
-import type { Slide } from "@/sanity/types";
-import { urlForImage } from "@/sanity/image";
 
-/*
-  The real photos recovered from the legacy site are old camera shots
-  (2014), topping out around 350px on the long edge. A full-bleed hero
-  banner would need to upscale them 4-5x and look soft, so instead this
-  renders them as a collage sized close to their native resolution —
-  sharp, and it shows all three captions as real text rather than
-  hiding them behind an auto-advancing carousel (which also sidesteps
-  the WCAG 2.2.2 concern with auto-updating content).
-*/
-const LARGE_TILE = { width: 420, height: 315 };
-const SMALL_TILE = { width: 220, height: 165 };
+/* Stock countryside photo — client can replace by uploading a hero image
+   to Sanity Studio (slideshow field on the Home page document). */
+const STOCK_HERO =
+  "https://images.unsplash.com/photo-1587300003388-59208cc962cb?auto=format&fit=crop&w=1920&q=80";
 
-function textOf(block?: PortableTextBlock) {
-  if (!block || !("children" in block)) return "";
-  return block.children
-    .map((c) => ("text" in c && typeof c.text === "string" ? c.text : ""))
-    .join("");
-}
-
-function Caption({ caption, size }: { caption?: Slide["caption"]; size: "lg" | "sm" }) {
-  const [heading, ...rest] = caption ?? [];
-  if (!heading) return null;
-
-  return (
-    <figcaption className="mt-3">
-      <p className={size === "lg" ? "text-base font-semibold" : "text-sm font-semibold"}>
-        {textOf(heading)}
-      </p>
-      {size === "lg" &&
-        rest.map((block, i) => (
-          <p key={i} className="mt-1 text-sm text-elk-body">
-            {textOf(block)}
-          </p>
-        ))}
-    </figcaption>
-  );
-}
+type Props = {
+  headline?: string;
+  subtext?: string;
+};
 
 export default function Hero({
-  title,
-  slides,
-}: {
-  title?: string;
-  slides?: Slide[];
-}) {
-  const [big, ...small] = slides ?? [];
-
+  headline = "A Holiday Destination for Your Pet.",
+  subtext = "Premium 5-star boarding in the heart of Nottinghamshire. Where luxury meets the countryside, providing a stress-free haven for your furry companions.",
+}: Props) {
   return (
-    <section className="bg-zinc-50">
-      <div className="mx-auto grid max-w-6xl gap-12 px-6 py-16 lg:grid-cols-2 lg:items-center lg:py-24">
-        <div>
-          <FaPaw aria-hidden="true" className="text-xl text-elk-accent" />
-          <h1 className="mt-4 text-3xl sm:text-4xl">{title ?? "Elm Lodge Kennels"}</h1>
-          <p className="mt-3 text-sm font-semibold tracking-wide text-elk-body">
-            Exercise Paddock &middot; Private Walks &middot; Undercover Runs
-          </p>
+    <section className="relative flex min-h-[77vh] items-center justify-center overflow-hidden">
+      <Image
+        src={STOCK_HERO}
+        alt="Golden retriever running through a green countryside field"
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover object-center"
+      />
+
+      {/* Heavier overlay so white text is always legible */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/60 to-black/65" />
+
+      <div className="relative z-10 mx-auto max-w-3xl px-6 py-28 text-center">
+        <h1 className="text-balance text-5xl font-bold leading-tight text-white sm:text-6xl lg:text-7xl">
+          {headline}
+        </h1>
+        <p className="mx-auto mt-6 max-w-xl text-lg text-white/85">
+          {subtext}
+        </p>
+        <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
           <Link
-            href="/contact-us"
-            className="mt-6 inline-block rounded-full bg-elk-accent-deep px-7 py-3 text-sm font-semibold tracking-wide text-white shadow-md transition hover:opacity-90"
+            href="/book"
+            className="rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-elk-heading transition hover:bg-elk-cream"
           >
-            Book Your Dog&apos;s Stay
+            Book a Stay
+          </Link>
+          <Link
+            href="/boarding"
+            className="rounded-full border border-white/60 px-8 py-3.5 text-sm font-semibold text-white transition hover:border-white hover:bg-white/10"
+          >
+            View Our Facilities
           </Link>
         </div>
-
-        {slides && slides.length > 0 && (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-            {big.image && (
-              <figure className="sm:col-span-2">
-                <div className="relative aspect-[4/3] w-full max-w-[420px] overflow-hidden rounded-2xl shadow-sm">
-                  <Image
-                    src={urlForImage(big.image).width(LARGE_TILE.width).height(LARGE_TILE.height).url()}
-                    alt=""
-                    fill
-                    sizes={`${LARGE_TILE.width}px`}
-                    className="object-cover"
-                  />
-                </div>
-                <Caption caption={big.caption} size="lg" />
-              </figure>
-            )}
-            {small.map((slide, i) => (
-              <figure key={i}>
-                {slide.image && (
-                  <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl shadow-sm">
-                    <Image
-                      src={urlForImage(slide.image).width(SMALL_TILE.width).height(SMALL_TILE.height).url()}
-                      alt=""
-                      fill
-                      sizes={`${SMALL_TILE.width}px`}
-                      className="object-cover"
-                    />
-                  </div>
-                )}
-                <Caption caption={slide.caption} size="sm" />
-              </figure>
-            ))}
-          </div>
-        )}
       </div>
     </section>
   );

@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { FaPaw } from "react-icons/fa6";
 import type { NavLink, SiteSettings } from "@/sanity/types";
 
 function hrefFor(link: NavLink) {
@@ -17,21 +16,20 @@ export default function SiteHeader({ settings }: { settings: SiteSettings | null
   const links = settings?.primaryNavigation ?? [];
 
   return (
-    <header className="sticky top-0 z-50 bg-elk-tan/95 backdrop-blur supports-[backdrop-filter]:bg-elk-tan/90">
+    <header className="sticky top-0 z-50 border-b border-zinc-100 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/90">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 font-heading text-xl font-bold tracking-wide text-elk-gold-deep"
+          className="font-heading text-xl font-bold tracking-tight text-elk-heading"
         >
-          <FaPaw aria-hidden="true" />
           {settings?.title ?? "Elm Lodge Kennels"}
         </Link>
 
-        <nav aria-label="Primary" className="hidden md:flex md:items-center md:gap-6">
-          <ul className="flex gap-7 text-sm font-medium text-zinc-600">
+        <nav aria-label="Primary" className="hidden md:flex md:items-center md:gap-8">
+          <ul className="flex gap-7 text-sm font-medium text-zinc-500">
             {links.map((link) => (
               <li key={link.slug}>
-                <Link href={hrefFor(link)} className="transition hover:text-elk-accent-deep">
+                <Link href={hrefFor(link)} className="transition hover:text-elk-heading">
                   {link.title}
                 </Link>
               </li>
@@ -39,7 +37,7 @@ export default function SiteHeader({ settings }: { settings: SiteSettings | null
           </ul>
           <Link
             href="/book"
-            className="rounded-full bg-elk-accent-deep px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:opacity-90"
+            className="rounded-full bg-elk-forest px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-elk-forest-mid"
           >
             Book Now
           </Link>
@@ -63,7 +61,7 @@ export default function SiteHeader({ settings }: { settings: SiteSettings | null
         id="mobile-nav"
         aria-label="Primary"
         hidden={!open}
-        className="border-t border-zinc-300/50 px-6 pb-4 md:hidden"
+        className="border-t border-zinc-100 px-6 pb-4 md:hidden"
       >
         <ul className="flex flex-col gap-3 pt-3 text-sm font-medium text-zinc-600">
           {links.map((link) => (
@@ -77,7 +75,7 @@ export default function SiteHeader({ settings }: { settings: SiteSettings | null
             <Link
               href="/book"
               onClick={() => setOpen(false)}
-              className="mt-2 inline-block rounded-full bg-elk-accent-deep px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:opacity-90"
+              className="mt-2 inline-block rounded-full bg-elk-forest px-5 py-2 text-sm font-semibold text-white transition hover:bg-elk-forest-mid"
             >
               Book Now
             </Link>
