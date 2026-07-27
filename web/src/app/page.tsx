@@ -199,52 +199,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* 5. Expert Care — dark section */}
-      <section className="bg-elk-forest px-6 py-24 text-white">
-        <div className="mx-auto grid max-w-6xl items-center gap-16 lg:grid-cols-2">
-          <div>
-            <h2 className="text-4xl font-bold text-white">Expert Care, Guaranteed</h2>
-            <p className="mt-4 leading-relaxed text-zinc-300">
-              Our team consists of certified animal behaviourists and first-aid trained
-              specialists. We don&apos;t just watch your pets; we understand them. From
-              tailored exercise regimes to medication administration, your pet is in the
-              safest hands in the region.
-            </p>
-            <div className="mt-8 flex gap-10 border-t border-white/20 pt-8">
-              <div>
-                <p className="font-heading text-3xl font-bold text-elk-gold-light">5-Star</p>
-                <p className="mt-1 text-[11px] uppercase tracking-wider text-zinc-400">Council License</p>
-              </div>
-              <div className="border-l border-white/20 pl-10">
-                <p className="font-heading text-3xl font-bold text-elk-gold-light">100%</p>
-                <p className="mt-1 text-[11px] uppercase tracking-wider text-zinc-400">Vet Recommended</p>
-              </div>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="relative aspect-[3/4] overflow-hidden rounded-2xl">
-              <Image
-                src="https://images.unsplash.com/photo-1548767797-d8c844163c4a?auto=format&fit=crop&w=500&q=80"
-                alt="Kennel handler caring for a dog"
-                fill
-                sizes="(min-width: 1024px) 25vw, 50vw"
-                className="object-cover"
-              />
-            </div>
-            <div className="relative aspect-[3/4] translate-y-6 overflow-hidden rounded-2xl">
-              <Image
-                src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=500&q=80"
-                alt="Professional dog care and first aid supplies"
-                fill
-                sizes="(min-width: 1024px) 25vw, 50vw"
-                className="object-cover"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 6. CTA */}
+      {/* 5. CTA */}
       <section className="bg-elk-cream px-6 py-24 text-center">
         <h2 className="text-4xl font-bold text-elk-heading">Ready to Book a 5-Star Stay?</h2>
         <p className="mt-3 italic text-elk-gold">

@@ -7,6 +7,11 @@ export type NavLink = {
   slug: string;
 };
 
+export type OpeningHoursRow = {
+  days: string;
+  hours: string;
+};
+
 export type SiteSettings = {
   title?: string;
   address?: string;
@@ -21,6 +26,9 @@ export type SiteSettings = {
   licenseNumber?: string;
   creditText?: string;
   creditUrl?: string;
+  openingHours?: OpeningHoursRow[];
+  openingHoursNote?: string;
+  contactSubjects?: string[];
   primaryNavigation?: NavLink[];
 };
 

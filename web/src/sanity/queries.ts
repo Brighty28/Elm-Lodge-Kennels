@@ -15,6 +15,9 @@ export const siteSettingsQuery = groq`
     licenseNumber,
     creditText,
     creditUrl,
+    openingHours[]{days, hours},
+    openingHoursNote,
+    contactSubjects,
     primaryNavigation[]->{
       _type,
       title,

@@ -33,6 +33,36 @@ export default defineType({
     defineField({name: 'creditText', title: 'Site Credit Text', type: 'string'}),
     defineField({name: 'creditUrl', title: 'Site Credit URL', type: 'url'}),
     defineField({
+      name: 'openingHours',
+      title: 'Opening Hours',
+      description: 'Rows displayed in the Opening Hours card on the Contact page.',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            defineField({name: 'days', title: 'Days', type: 'string', description: 'e.g. Monday – Friday'}),
+            defineField({name: 'hours', title: 'Hours', type: 'string', description: 'e.g. 9:00 AM – 5:00 PM'}),
+          ],
+          preview: {select: {title: 'days', subtitle: 'hours'}},
+        },
+      ],
+    }),
+    defineField({
+      name: 'openingHoursNote',
+      title: 'Opening Hours Note',
+      description: 'Optional small-print note shown below opening hours.',
+      type: 'text',
+      rows: 2,
+    }),
+    defineField({
+      name: 'contactSubjects',
+      title: 'Contact Form Subjects',
+      description: 'Options in the Subject dropdown on the Contact page.',
+      type: 'array',
+      of: [{type: 'string'}],
+    }),
+    defineField({
       name: 'primaryNavigation',
       title: 'Primary Navigation',
       description: 'Pages shown in the top navigation menu, in order.',
