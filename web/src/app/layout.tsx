@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Source_Sans_3, Montserrat } from "next/font/google";
+import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { client } from "@/sanity/client";
 import { siteSettingsQuery } from "@/sanity/queries";
@@ -7,16 +7,17 @@ import type { SiteSettings } from "@/sanity/types";
 import SiteHeader from "@/components/layout/SiteHeader";
 import SiteFooter from "@/components/layout/SiteFooter";
 
-const sourceSans = Source_Sans_3({
+const inter = Inter({
   variable: "--font-body",
-  weight: ["300", "400", "600"],
   subsets: ["latin"],
+  display: "swap",
 });
 
-const montserrat = Montserrat({
+const playfair = Playfair_Display({
   variable: "--font-heading",
-  weight: ["600", "700"],
+  weight: ["600", "700", "800"],
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -34,10 +35,10 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${sourceSans.variable} ${montserrat.variable} h-full antialiased`}
+      className={`${inter.variable} ${playfair.variable} h-full antialiased`}
     >
       <body
-        className="flex min-h-full flex-col bg-white font-body text-elk-body"
+        className="flex min-h-full flex-col bg-elk-cream font-body text-elk-body"
         suppressHydrationWarning
       >
         <a href="#main-content" className="skip-link">
